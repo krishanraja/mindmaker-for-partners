@@ -111,7 +111,7 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
     try {
       // Save intake data to Supabase
       const { data: intake, error } = await supabase
-        .from('partner_intakes')
+        .from('partner_intakes' as any)
         .insert({
           partner_type: intakeData.partner_type,
           firm_name: intakeData.firm_name,
@@ -125,13 +125,13 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
           urgency_window: intakeData.urgency_window,
           resources_enablement_bandwidth: intakeData.resources_enablement_bandwidth,
           consent: intakeData.consent
-        })
+        } as any)
         .select()
         .single();
 
       if (error) throw error;
 
-      onSubmit(intakeData, intake.id);
+      onSubmit(intakeData, (intake as any).id);
     } catch (error) {
       console.error('Error saving intake:', error);
       toast({

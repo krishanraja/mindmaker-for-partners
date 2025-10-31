@@ -25,7 +25,7 @@ const PartnerPlanShare = () => {
 
       try {
         const { data: plan, error: planError } = await supabase
-          .from('partner_plans')
+          .from('partner_plans' as any)
           .select(`
             *,
             partner_intakes (*)
@@ -41,9 +41,9 @@ const PartnerPlanShare = () => {
 
         // Fetch portfolio items
         const { data: portfolioItems, error: itemsError } = await supabase
-          .from('partner_portfolio_items')
+          .from('partner_portfolio_items' as any)
           .select('*')
-          .eq('intake_id', plan.intake_id);
+          .eq('intake_id', (plan as any).intake_id);
 
         if (itemsError) {
           setError('Error loading portfolio data');
@@ -52,7 +52,7 @@ const PartnerPlanShare = () => {
         }
 
         setPlanData({
-          ...plan,
+          ...(plan as Record<string, any>),
           portfolioItems: portfolioItems || []
         });
         setLoading(false);

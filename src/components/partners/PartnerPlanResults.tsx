@@ -46,12 +46,12 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
               heatmap_data: portfolioItems,
               created_at: new Date().toISOString()
             }
-          })
+          } as any)
           .select()
           .single();
 
         if (error) throw error;
-        setPlanId(plan.id);
+        setPlanId((plan as any).id);
       } catch (error) {
         console.error('Error creating plan:', error);
       }

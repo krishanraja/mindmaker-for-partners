@@ -194,9 +194,10 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error generating personalized insights:', error);
+    const err = error as Error;
     console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
+      message: err.message || 'Unknown error',
+      stack: err.stack || 'No stack trace',
       timestamp: new Date().toISOString()
     });
     
