@@ -9,7 +9,7 @@ interface PartnerHeroSectionProps {
 
 export function PartnerHeroSection({ onStartAssessment }: PartnerHeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "PARTNERS — Portfolio Readiness & Co-Delivery Planner";
+  const fullText = "INTEGRATE AI LITERACY INTO YOUR PORTFOLIO";
   
   useEffect(() => {
     let currentIndex = 0;
