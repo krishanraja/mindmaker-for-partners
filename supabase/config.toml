@@ -1,0 +1,16 @@
+project_id = "bkyuxvschuwngtcdhsyg"
+
+[functions.send-diagnostic-email]
+verify_jwt = false
+
+[functions.send-advisory-sprint-notification]
+verify_jwt = false
+
+[functions.generate-executive-insights]
+verify_jwt = false
+
+[functions.generate-prompt-library]
+verify_jwt = false
+
+[functions.generate-personalized-insights]
+verify_jwt = false
