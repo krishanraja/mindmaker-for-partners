@@ -106,14 +106,137 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // Check if this is a "table doesn't exist" error
+        const errorMsg = error.message || '';
+        const is404 = errorMsg.includes('relation') || errorMsg.includes('does not exist') || error.code === '42P01';
+        
+        console.error('Database error:', {
+          message: errorMsg,
+          code: error.code,
+          hint: error.hint,
+          details: error.details
+        });
+        
+        if (is404) {
+          toast({
+            title: 'Database Setup Required',
+            description: 'Tables need to be created. Check the console for SQL script.',
+            variant: 'destructive',
+            duration: 10000
+          });
+          
+          console.error(`
+╔══════════════════════════════════════════════════════════════╗
+║  DATABASE TABLES MISSING - SETUP REQUIRED                   ║
+╚══════════════════════════════════════════════════════════════╝
+
+The 'partner_intakes' table doesn't exist in your Supabase database.
+
+📋 SETUP INSTRUCTIONS:
+
+1. Open Supabase Dashboard: https://supabase.com/dashboard/project/bkyuxvschuwngtcdhsyg/sql
+2. Copy and paste the SQL below into the SQL Editor
+3. Click "Run" to execute
+4. Try submitting the form again
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+-- Partner Assessment Database Tables
+CREATE TABLE partner_intakes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  firm_name TEXT NOT NULL,
+  pipeline_count INTEGER NOT NULL CHECK (pipeline_count >= 1 AND pipeline_count <= 10),
+  pipeline_names TEXT NOT NULL,
+  objectives_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+  urgency_window TEXT NOT NULL,
+  consent BOOLEAN NOT NULL DEFAULT false,
+  partner_type TEXT,
+  role TEXT,
+  region TEXT,
+  sectors_json JSONB DEFAULT '[]'::jsonb,
+  engagement_model TEXT,
+  resources_enablement_bandwidth TEXT
+);
+
+CREATE TABLE partner_portfolio_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  intake_id UUID NOT NULL REFERENCES partner_intakes(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  sector TEXT,
+  stage TEXT,
+  ai_posture TEXT NOT NULL,
+  data_posture TEXT NOT NULL,
+  value_pressure TEXT NOT NULL,
+  decision_cadence TEXT NOT NULL,
+  sponsor_strength TEXT NOT NULL,
+  willingness_60d TEXT NOT NULL,
+  fit_score INTEGER NOT NULL,
+  recommendation TEXT NOT NULL,
+  risk_flags_json JSONB DEFAULT '[]'::jsonb
+);
+
+CREATE TABLE partner_plans (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  intake_id UUID NOT NULL REFERENCES partner_intakes(id) ON DELETE CASCADE,
+  share_slug TEXT UNIQUE NOT NULL,
+  firm_name TEXT NOT NULL,
+  objectives_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+  urgency_window TEXT NOT NULL,
+  pipeline_count INTEGER NOT NULL,
+  total_companies INTEGER NOT NULL DEFAULT 0,
+  exec_bootcamp_count INTEGER NOT NULL DEFAULT 0,
+  literacy_sprint_count INTEGER NOT NULL DEFAULT 0,
+  diagnostic_count INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_portfolio_items_intake ON partner_portfolio_items(intake_id);
+CREATE INDEX idx_plans_slug ON partner_plans(share_slug);
+CREATE INDEX idx_plans_intake ON partner_plans(intake_id);
+
+ALTER TABLE partner_intakes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE partner_portfolio_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE partner_plans ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "public_insert_intakes" ON partner_intakes FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_read_intakes" ON partner_intakes FOR SELECT USING (true);
+CREATE POLICY "public_insert_portfolio" ON partner_portfolio_items FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_read_portfolio" ON partner_portfolio_items FOR SELECT USING (true);
+CREATE POLICY "public_insert_plans" ON partner_plans FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_read_plans" ON partner_plans FOR SELECT USING (true);
+
+CREATE OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_intakes_timestamp BEFORE UPDATE ON partner_intakes FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_portfolio_timestamp BEFORE UPDATE ON partner_portfolio_items FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `);
+          
+          throw new Error('Database tables not found. See console for setup instructions.');
+        }
+        
+        throw error;
+      }
 
       onSubmit(intakeData, (intake as any).id);
     } catch (error) {
       console.error('Error saving intake:', error);
       toast({
         title: 'Error',
-        description: 'Failed to save. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to save. Please try again.',
         variant: 'destructive'
       });
     } finally {
