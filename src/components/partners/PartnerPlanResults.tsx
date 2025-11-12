@@ -40,12 +40,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
           .from('partner_plans' as any)
           .insert({
             intake_id: intakeId,
-            top_candidates_json: summary.topCandidates,
-            artifacts_json: {
-              summary: summary,
-              heatmap_data: portfolioItems,
-              created_at: new Date().toISOString()
-            }
+            top_candidates_json: summary.topCandidates
           } as any)
           .select()
           .single();
@@ -54,11 +49,16 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
         setPlanId((plan as any).id);
       } catch (error) {
         console.error('Error creating plan:', error);
+        toast({
+          title: "Plan creation failed",
+          description: "Unable to save plan. You can still view and export your results.",
+          variant: "destructive"
+        });
       }
     };
 
     createPlan();
-  }, [intakeId, portfolioItems, summary]);
+  }, [intakeId, portfolioItems, summary, toast]);
 
   return (
     <div className="bg-background min-h-screen py-8">
