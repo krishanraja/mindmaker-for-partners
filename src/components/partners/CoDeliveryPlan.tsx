@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Target, AlertCircle, ExternalLink } from 'lucide-react';
 import { ScoredPortfolioItem } from '@/utils/partnerScoring';
+import { getRecommendationBadgeVariant, getPreWorkList } from '@/utils/recommendationHelpers';
+import { CALENDLY_URL, RECOMMENDATION_TYPES } from '@/constants/partnerConstants';
 
 interface CoDeliveryPlanProps {
   topCandidates: ScoredPortfolioItem[];
   artifacts?: any;
 }
-
-const CALENDLY_URL = 'https://calendly.com/krish-raja/mindmaker-meeting';
 
 export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, artifacts }) => {
   if (!topCandidates || topCandidates.length === 0) {
@@ -21,39 +21,6 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
     );
   }
 
-  const getRecommendationBadge = (rec: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'outline'> = {
-      'Exec Bootcamp': 'default',
-      'Literacy Sprint': 'secondary',
-      'Diagnostic': 'outline'
-    };
-    return <Badge variant={variants[rec] || 'outline'}>{rec}</Badge>;
-  };
-
-  const getPreWorkList = (recommendation: string) => {
-    switch (recommendation) {
-      case 'Exec Bootcamp':
-        return [
-          'Confirm CEO/COO sponsor availability',
-          'Secure 90-day objective definition',
-          'Schedule kickoff within 14 days'
-        ];
-      case 'Literacy Sprint':
-        return [
-          'Identify team leads for sprint',
-          'Map initial AI use cases',
-          'Schedule 60-min alignment call'
-        ];
-      case 'Diagnostic':
-        return [
-          'Secure data access contact',
-          'Define current AI baseline',
-          'Schedule diagnostic session'
-        ];
-      default:
-        return ['Further qualification needed'];
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -67,7 +34,7 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">
-                {topCandidates.filter(c => c.recommendation === 'Exec Bootcamp').length}
+                {topCandidates.filter(c => c.recommendation === RECOMMENDATION_TYPES.EXEC_BOOTCAMP).length}
               </p>
               <p className="text-sm text-muted-foreground">Bootcamp Ready</p>
             </div>
@@ -97,7 +64,9 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
                   <p className="text-sm text-muted-foreground">{candidate.sector} • {candidate.stage}</p>
                 </div>
                 <div className="text-right space-y-1">
-                  {getRecommendationBadge(candidate.recommendation)}
+                  <Badge variant={getRecommendationBadgeVariant(candidate.recommendation)}>
+                    {candidate.recommendation}
+                  </Badge>
                   <p className="text-sm text-muted-foreground">Fit: {candidate.fit_score}/100</p>
                 </div>
               </div>

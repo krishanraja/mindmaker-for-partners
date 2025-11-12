@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { User, Building, ArrowRight, Target, Users } from 'lucide-react';
+import { Building, ArrowRight, Target } from 'lucide-react';
 import { estimateSprintCandidates } from '@/utils/intakeEstimator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { OBJECTIVE_OPTIONS, URGENCY_WINDOWS } from '@/constants/partnerConstants';
 
 export interface PartnerIntakeData {
   partner_type: string;
@@ -29,25 +30,6 @@ interface PartnerIntakeFormProps {
   onSubmit: (data: PartnerIntakeData, intakeId: string) => void;
   onBack?: () => void;
 }
-
-const OBJECTIVE_OPTIONS = [
-  'Enable portfolio AI adoption',
-  'Generate co-delivery pipeline',
-  'Qualify exec bootcamp leads',
-  'Build partner credibility',
-  'Identify quick wins',
-  'Risk mitigation'
-];
-
-const SECTOR_OPTIONS = [
-  'Technology',
-  'Healthcare',
-  'Finance',
-  'Manufacturing',
-  'Retail',
-  'Professional Services',
-  'Other'
-];
 
 export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, onBack }) => {
   const { toast } = useToast();
@@ -77,17 +59,13 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof PartnerIntakeData, string>> = {};
     
-    if (!intakeData.partner_type) newErrors.partner_type = 'Partner type is required';
     if (!intakeData.firm_name.trim()) newErrors.firm_name = 'Firm name is required';
-    if (!intakeData.role.trim()) newErrors.role = 'Role is required';
-    if (intakeData.objectives.length === 0) newErrors.objectives = 'Select at least one objective';
-    if (!intakeData.engagement_model) newErrors.engagement_model = 'Engagement model is required';
+    if (intakeData.objectives.length === 0) newErrors.objectives = 'Select at least one goal';
     if (intakeData.pipeline_count < 1 || intakeData.pipeline_count > 10) {
-      newErrors.pipeline_count = 'Pipeline count must be between 1 and 10';
+      newErrors.pipeline_count = 'Must be between 1 and 10';
     }
-    if (!intakeData.pipeline_names.trim()) newErrors.pipeline_names = 'Pipeline names are required';
-    if (!intakeData.urgency_window) newErrors.urgency_window = 'Urgency window is required';
-    if (!intakeData.resources_enablement_bandwidth) newErrors.resources_enablement_bandwidth = 'Enablement bandwidth is required';
+    if (!intakeData.pipeline_names.trim()) newErrors.pipeline_names = 'Company names are required';
+    if (!intakeData.urgency_window) newErrors.urgency_window = 'Timeline is required';
     if (!intakeData.consent) newErrors.consent = 'Consent is required';
     
     setErrors(newErrors);
@@ -99,8 +77,8 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
     
     if (!validateForm()) {
       toast({
-        title: 'Validation Error',
-        description: 'Please fill in all required fields',
+        title: 'Please complete all fields',
+        description: 'Fill in the required information to continue',
         variant: 'destructive'
       });
       return;
@@ -109,7 +87,6 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
     setIsSubmitting(true);
 
     try {
-      // Save intake data to Supabase
       const { data: intake, error } = await supabase
         .from('partner_intakes' as any)
         .insert({
@@ -136,7 +113,7 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
       console.error('Error saving intake:', error);
       toast({
         title: 'Error',
-        description: 'Failed to save intake data. Please try again.',
+        description: 'Failed to save. Please try again.',
         variant: 'destructive'
       });
     } finally {
@@ -151,12 +128,12 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
     }
   };
 
-  const toggleArrayItem = (field: 'objectives' | 'sectors', value: string) => {
-    const current = intakeData[field];
+  const toggleObjective = (value: string) => {
+    const current = intakeData.objectives;
     const updated = current.includes(value)
       ? current.filter(item => item !== value)
       : [...current, value];
-    handleInputChange(field, updated);
+    handleInputChange('objectives', updated);
   };
 
   return (
@@ -172,10 +149,10 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-6 sm:py-8">
         <div className="text-center mb-6 sm:mb-8 pt-12 sm:pt-16">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-            Step 1: Partner Context
+            Quick Assessment Setup
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            Tell us about your firm and portfolio so we can tailor the assessment and recommendations.
+            6 quick fields to tailor your portfolio readiness plan
           </p>
           
           {estimatedCandidates > 0 && (
@@ -192,29 +169,6 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
           <Card className="shadow-sm border rounded-xl">
             <CardContent className="p-6 sm:p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Partner Type */}
-                <div className="space-y-2">
-                  <Label htmlFor="partner_type" className="text-foreground font-medium text-sm">
-                    <Users className="h-4 w-4 inline mr-2" />
-                    Partner Type <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="partner_type"
-                    value={intakeData.partner_type}
-                    onChange={(e) => handleInputChange('partner_type', e.target.value)}
-                    className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select type</option>
-                    <option value="Consulting Firm">Consulting Firm</option>
-                    <option value="System Integrator">System Integrator</option>
-                    <option value="Technology Vendor">Technology Vendor</option>
-                    <option value="VC/PE Firm">VC/PE Firm</option>
-                    <option value="Accelerator/Incubator">Accelerator/Incubator</option>
-                    <option value="Advisory Network">Advisory Network</option>
-                  </select>
-                  {errors.partner_type && <p className="text-destructive text-sm">{errors.partner_type}</p>}
-                </div>
-
                 {/* Firm Name */}
                 <div className="space-y-2">
                   <Label htmlFor="firm_name" className="text-foreground font-medium text-sm">
@@ -231,96 +185,7 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
                   {errors.firm_name && <p className="text-destructive text-sm">{errors.firm_name}</p>}
                 </div>
 
-                {/* Role */}
-                <div className="space-y-2">
-                  <Label htmlFor="role" className="text-foreground font-medium text-sm">
-                    <User className="h-4 w-4 inline mr-2" />
-                    Your Role <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="role"
-                    value={intakeData.role}
-                    onChange={(e) => handleInputChange('role', e.target.value)}
-                    className="rounded-xl"
-                    placeholder="e.g., Partner, BD Director"
-                  />
-                  {errors.role && <p className="text-destructive text-sm">{errors.role}</p>}
-                </div>
-
-                {/* Region */}
-                <div className="space-y-2">
-                  <Label htmlFor="region" className="text-foreground font-medium text-sm">
-                    Primary Region
-                  </Label>
-                  <Input
-                    id="region"
-                    value={intakeData.region}
-                    onChange={(e) => handleInputChange('region', e.target.value)}
-                    className="rounded-xl"
-                    placeholder="e.g., North America, EMEA"
-                  />
-                </div>
-
-                {/* Sectors */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium text-sm">
-                    Key Sectors (select all that apply)
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {SECTOR_OPTIONS.map(sector => (
-                      <Badge
-                        key={sector}
-                        variant={intakeData.sectors.includes(sector) ? 'default' : 'outline'}
-                        className="cursor-pointer"
-                        onClick={() => toggleArrayItem('sectors', sector)}
-                      >
-                        {sector}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Objectives */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium text-sm">
-                    Primary Objectives <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {OBJECTIVE_OPTIONS.map(objective => (
-                      <Badge
-                        key={objective}
-                        variant={intakeData.objectives.includes(objective) ? 'default' : 'outline'}
-                        className="cursor-pointer"
-                        onClick={() => toggleArrayItem('objectives', objective)}
-                      >
-                        {objective}
-                      </Badge>
-                    ))}
-                  </div>
-                  {errors.objectives && <p className="text-destructive text-sm">{errors.objectives}</p>}
-                </div>
-
-                {/* Engagement Model */}
-                <div className="space-y-2">
-                  <Label htmlFor="engagement_model" className="text-foreground font-medium text-sm">
-                    Engagement Model <span className="text-destructive">*</span>
-                  </Label>
-                  <select
-                    id="engagement_model"
-                    value={intakeData.engagement_model}
-                    onChange={(e) => handleInputChange('engagement_model', e.target.value)}
-                    className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select model</option>
-                    <option value="Referral">Referral</option>
-                    <option value="Co-delivery">Co-delivery</option>
-                    <option value="White-label">White-label</option>
-                    <option value="Channel">Channel</option>
-                  </select>
-                  {errors.engagement_model && <p className="text-destructive text-sm">{errors.engagement_model}</p>}
-                </div>
-
-                {/* Pipeline Count */}
+                {/* Number of Companies */}
                 <div className="space-y-2">
                   <Label htmlFor="pipeline_count" className="text-foreground font-medium text-sm">
                     Number of Companies to Assess (max 10) <span className="text-destructive">*</span>
@@ -337,7 +202,7 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
                   {errors.pipeline_count && <p className="text-destructive text-sm">{errors.pipeline_count}</p>}
                 </div>
 
-                {/* Pipeline Names */}
+                {/* Company Names */}
                 <div className="space-y-2">
                   <Label htmlFor="pipeline_names" className="text-foreground font-medium text-sm">
                     Company Names <span className="text-destructive">*</span>
@@ -354,13 +219,34 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
                   {errors.pipeline_names && <p className="text-destructive text-sm">{errors.pipeline_names}</p>}
                 </div>
 
-                {/* Urgency Window */}
+                {/* Primary Goal */}
                 <div className="space-y-2">
                   <Label className="text-foreground font-medium text-sm">
-                    Urgency Window <span className="text-destructive">*</span>
+                    Primary Goal <span className="text-destructive">*</span>
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">Select your main objective</p>
+                  <div className="flex flex-wrap gap-2">
+                    {OBJECTIVE_OPTIONS.map(objective => (
+                      <Badge
+                        key={objective}
+                        variant={intakeData.objectives.includes(objective) ? 'default' : 'outline'}
+                        className="cursor-pointer"
+                        onClick={() => toggleObjective(objective)}
+                      >
+                        {objective}
+                      </Badge>
+                    ))}
+                  </div>
+                  {errors.objectives && <p className="text-destructive text-sm">{errors.objectives}</p>}
+                </div>
+
+                {/* Timeline */}
+                <div className="space-y-2">
+                  <Label className="text-foreground font-medium text-sm">
+                    Timeline <span className="text-destructive">*</span>
                   </Label>
                   <div className="space-y-2">
-                    {['0-30 days', '31-60 days', '61-90 days', '90+ days'].map(window => (
+                    {URGENCY_WINDOWS.map(window => (
                       <label key={window} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="radio"
@@ -377,29 +263,6 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
                   {errors.urgency_window && <p className="text-destructive text-sm">{errors.urgency_window}</p>}
                 </div>
 
-                {/* Enablement Bandwidth */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium text-sm">
-                    Enablement Bandwidth <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="space-y-2">
-                    {['Low', 'Medium', 'High'].map(level => (
-                      <label key={level} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="bandwidth"
-                          value={level}
-                          checked={intakeData.resources_enablement_bandwidth === level}
-                          onChange={(e) => handleInputChange('resources_enablement_bandwidth', e.target.value)}
-                          className="h-4 w-4"
-                        />
-                        <span className="text-sm">{level}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {errors.resources_enablement_bandwidth && <p className="text-destructive text-sm">{errors.resources_enablement_bandwidth}</p>}
-                </div>
-
                 {/* Consent */}
                 <div className="space-y-3 pt-4 border-t">
                   <div className="flex items-start gap-3">
@@ -411,10 +274,10 @@ export const PartnerIntakeForm: React.FC<PartnerIntakeFormProps> = ({ onSubmit, 
                       className="mt-1 h-4 w-4 rounded"
                     />
                     <Label htmlFor="consent" className="text-sm text-muted-foreground cursor-pointer">
-                      I consent to receiving portfolio insights and co-delivery recommendations from MindMaker.
+                      I consent to Mindmaker storing this data for co-delivery coordination <span className="text-destructive">*</span>
                     </Label>
                   </div>
-                  {errors.consent && <p className="text-destructive text-sm ml-7">{errors.consent}</p>}
+                  {errors.consent && <p className="text-destructive text-sm">{errors.consent}</p>}
                 </div>
 
                 <Button

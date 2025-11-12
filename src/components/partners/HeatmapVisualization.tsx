@@ -1,6 +1,8 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { ScoredPortfolioItem } from '@/utils/partnerScoring';
+import { getRecommendationColor } from '@/utils/recommendationHelpers';
+import { RECOMMENDATION_TYPES } from '@/constants/partnerConstants';
 
 interface HeatmapVisualizationProps {
   portfolioItems: ScoredPortfolioItem[];
@@ -21,15 +23,6 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
     pressure: item.value_pressure
   }));
 
-  // Color by recommendation
-  const getColor = (recommendation: string) => {
-    switch (recommendation) {
-      case 'Exec Bootcamp': return 'hsl(var(--primary))';
-      case 'Literacy Sprint': return 'hsl(var(--chart-2))';
-      case 'Diagnostic': return 'hsl(var(--chart-3))';
-      default: return 'hsl(var(--muted))';
-    }
-  };
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -97,7 +90,12 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
           )}
           
           {/* Group by recommendation */}
-          {['Exec Bootcamp', 'Literacy Sprint', 'Diagnostic', 'Not now'].map(rec => {
+          {[
+            RECOMMENDATION_TYPES.EXEC_BOOTCAMP,
+            RECOMMENDATION_TYPES.LITERACY_SPRINT,
+            RECOMMENDATION_TYPES.DIAGNOSTIC,
+            RECOMMENDATION_TYPES.NOT_NOW
+          ].map(rec => {
             const filtered = chartData.filter(d => d.recommendation === rec);
             if (filtered.length === 0) return null;
             
@@ -106,7 +104,7 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
                 key={rec}
                 name={rec}
                 data={filtered}
-                fill={getColor(rec)}
+                fill={getRecommendationColor(rec)}
                 shape="circle"
               />
             );

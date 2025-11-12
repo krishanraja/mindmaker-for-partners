@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { ArrowRight } from 'lucide-react';
 import { PartnerIntakeData } from './PartnerIntakeForm';
@@ -9,6 +8,7 @@ import { calculateFitScore, getRecommendation, getRiskFlags, ScoredPortfolioItem
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { HeatmapVisualization } from './HeatmapVisualization';
+import { PortfolioScoringRow } from './PortfolioScoringRow';
 
 interface PortfolioScoringTableProps {
   intakeData: PartnerIntakeData;
@@ -181,142 +181,12 @@ export const PortfolioScoringTable: React.FC<PortfolioScoringTableProps> = ({
           {/* Scoring Table */}
           <div className="lg:col-span-2 space-y-4">
             {portfolioItems.map((item, index) => (
-              <Card key={index} className="shadow-sm border rounded-xl">
-                <CardContent className="p-4 sm:p-6">
-                  <h3 className="font-bold text-foreground mb-4">{item.name}</h3>
-                  
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {/* Sector */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Sector</Label>
-                      <select
-                        value={item.sector}
-                        onChange={(e) => updateItem(index, 'sector', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Manufacturing">Manufacturing</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-
-                    {/* Stage */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Stage</Label>
-                      <select
-                        value={item.stage}
-                        onChange={(e) => updateItem(index, 'stage', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Seed">Seed</option>
-                        <option value="Growth">Growth</option>
-                        <option value="Mature">Mature</option>
-                        <option value="Enterprise">Enterprise</option>
-                      </select>
-                    </div>
-
-                    {/* AI Posture */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">AI Posture</Label>
-                      <select
-                        value={item.ai_posture}
-                        onChange={(e) => updateItem(index, 'ai_posture', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="None">None</option>
-                        <option value="Exploring">Exploring</option>
-                        <option value="Active">Active</option>
-                        <option value="Leading">Leading</option>
-                      </select>
-                    </div>
-
-                    {/* Data Posture */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Data Posture</Label>
-                      <select
-                        value={item.data_posture}
-                        onChange={(e) => updateItem(index, 'data_posture', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Disconnected">Disconnected</option>
-                        <option value="Scattered">Scattered</option>
-                        <option value="Connected">Connected</option>
-                        <option value="Optimized">Optimized</option>
-                      </select>
-                    </div>
-
-                    {/* Value Pressure */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Value Pressure</Label>
-                      <select
-                        value={item.value_pressure}
-                        onChange={(e) => updateItem(index, 'value_pressure', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Critical">Critical</option>
-                      </select>
-                    </div>
-
-                    {/* Decision Cadence */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Decision Cadence</Label>
-                      <select
-                        value={item.decision_cadence}
-                        onChange={(e) => updateItem(index, 'decision_cadence', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Slow">Slow</option>
-                        <option value="Moderate">Moderate</option>
-                        <option value="Fast">Fast</option>
-                        <option value="Urgent">Urgent</option>
-                      </select>
-                    </div>
-
-                    {/* Sponsor Strength */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Sponsor Strength</Label>
-                      <select
-                        value={item.sponsor_strength}
-                        onChange={(e) => updateItem(index, 'sponsor_strength', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="None">None</option>
-                        <option value="Weak">Weak</option>
-                        <option value="Moderate">Moderate</option>
-                        <option value="Strong">Strong</option>
-                      </select>
-                    </div>
-
-                    {/* Willingness 60d */}
-                    <div className="space-y-2">
-                      <Label className="text-sm">Willingness (60d)</Label>
-                      <select
-                        value={item.willingness_60d}
-                        onChange={(e) => updateItem(index, 'willingness_60d', e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                      </select>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <PortfolioScoringRow
+                key={index}
+                item={item}
+                index={index}
+                onChange={updateItem}
+              />
             ))}
           </div>
 

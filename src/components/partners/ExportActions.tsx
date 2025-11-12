@@ -4,6 +4,7 @@ import { Download, Share2, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ScoredPortfolioItem, PortfolioSummary } from '@/utils/partnerScoring';
+import { RECOMMENDATION_TYPES } from '@/constants/partnerConstants';
 
 interface ExportActionsProps {
   planId: string;
@@ -57,7 +58,8 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
     try {
       // Get candidates with Exec Bootcamp or Literacy Sprint recommendations
       const qualifiedCandidates = portfolioItems.filter(
-        item => ['Exec Bootcamp', 'Literacy Sprint'].includes(item.recommendation)
+        item => item.recommendation === RECOMMENDATION_TYPES.EXEC_BOOTCAMP || 
+                item.recommendation === RECOMMENDATION_TYPES.LITERACY_SPRINT
       );
 
       if (qualifiedCandidates.length === 0) {
