@@ -29,12 +29,16 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
   const [activeTab, setActiveTab] = useState<string>('heatmap');
   const [planId, setPlanId] = useState<string | null>(null);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
+  const [planCreationAttempted, setPlanCreationAttempted] = useState(false);
 
   const summary = getPortfolioSummary(portfolioItems);
 
   useEffect(() => {
-    // Create partner plan record
+    // Only create plan once to prevent flashing errors
+    if (planCreationAttempted) return;
+    
     const createPlan = async () => {
+      setPlanCreationAttempted(true);
       try {
         const { data: plan, error } = await supabase
           .from('partner_plans' as any)
@@ -49,6 +53,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
         setPlanId((plan as any).id);
       } catch (error) {
         console.error('Error creating plan:', error);
+        // Only show toast once
         toast({
           title: "Plan creation failed",
           description: "Unable to save plan. You can still view and export your results.",
@@ -58,7 +63,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
     };
 
     createPlan();
-  }, [intakeId, portfolioItems, summary, toast]);
+  }, [intakeId, summary.topCandidates, toast, planCreationAttempted]);
 
   return (
     <div className="bg-background min-h-screen py-8">

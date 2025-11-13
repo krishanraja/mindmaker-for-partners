@@ -38,12 +38,12 @@ export const PortfolioScoringTable: React.FC<PortfolioScoringTableProps> = ({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Parse company names
+  // Parse company names - limit to pipeline_count
   const companyNames = intakeData.pipeline_names
     .split(',')
     .map(name => name.trim())
     .filter(name => name.length > 0)
-    .slice(0, 10);
+    .slice(0, intakeData.pipeline_count);
 
   // Initialize portfolio items
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItemInput[]>(
