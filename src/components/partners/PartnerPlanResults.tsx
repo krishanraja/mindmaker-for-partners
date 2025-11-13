@@ -175,6 +175,40 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
             </Card>
           </div>
         )}
+
+        {/* Next Steps CTA */}
+        <div className="max-w-3xl mx-auto mt-12">
+          <Card className="shadow-lg border-2 border-primary/20 rounded-2xl bg-gradient-to-br from-primary/10 via-background to-accent/5">
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="space-y-3">
+                <h3 className="text-2xl font-bold text-foreground">Ready to Move Forward?</h3>
+                <p className="text-muted-foreground max-w-xl mx-auto">
+                  Let's discuss how we can work together—whether building a custom toolkit for your portfolio or partnering on AI strategy for your top candidates.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  size="lg"
+                  variant="default"
+                  className="rounded-xl"
+                  onClick={() => window.open('https://calendly.com/mindmaker/partner-discussion', '_blank')}
+                >
+                  <Target className="mr-2 h-5 w-5" />
+                  Schedule a Discussion
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => window.location.href = 'mailto:partners@mindmaker.ai?subject=Partnership Opportunity&body=Hi, I just completed the portfolio assessment and would like to discuss next steps.'}
+                >
+                  <Send className="mr-2 h-5 w-5" />
+                  Email Us
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

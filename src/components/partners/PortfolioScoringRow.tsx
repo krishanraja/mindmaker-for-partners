@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
 import {
   SECTOR_OPTIONS,
   STAGE_OPTIONS,
@@ -30,16 +32,38 @@ interface PortfolioScoringRowProps {
   onChange: (index: number, field: keyof PortfolioItemInput, value: string) => void;
 }
 
+const tooltips = {
+  sector: "The primary industry vertical this company operates in",
+  stage: "The company's current maturity level and growth stage",
+  ai_posture: "Current state of AI adoption and organizational readiness for AI initiatives",
+  data_posture: "Quality, accessibility, and governance of the company's data infrastructure",
+  value_pressure: "Urgency to demonstrate measurable ROI and business value from initiatives",
+  decision_cadence: "Typical speed of decision-making and ability to move projects forward",
+  sponsor_strength: "Level of executive support and championship for strategic initiatives",
+  willingness_60d: "Company's readiness to engage in a meaningful project within the next 60 days"
+};
+
 export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, index, onChange }) => {
   return (
-    <Card className="shadow-sm border rounded-xl">
-      <CardContent className="p-4 sm:p-6">
-        <h3 className="font-bold text-foreground mb-4">{item.name}</h3>
-        
-        <div className="grid sm:grid-cols-2 gap-4">
-          {/* Sector */}
-          <div className="space-y-2">
-            <Label className="text-sm">Sector</Label>
+    <TooltipProvider>
+      <Card className="shadow-sm border rounded-xl">
+        <CardContent className="p-4 sm:p-6">
+          <h3 className="font-bold text-foreground mb-4">{item.name}</h3>
+          
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* Sector */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label className="text-sm">Sector</Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p>{tooltips.sector}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             <select
               value={item.sector}
               onChange={(e) => onChange(index, 'sector', e.target.value)}
@@ -54,7 +78,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Stage */}
           <div className="space-y-2">
-            <Label className="text-sm">Stage</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Stage</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.stage}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.stage}
               onChange={(e) => onChange(index, 'stage', e.target.value)}
@@ -69,7 +103,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* AI Posture */}
           <div className="space-y-2">
-            <Label className="text-sm">AI Posture</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">AI Posture</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.ai_posture}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.ai_posture}
               onChange={(e) => onChange(index, 'ai_posture', e.target.value)}
@@ -84,7 +128,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Data Posture */}
           <div className="space-y-2">
-            <Label className="text-sm">Data Posture</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Data Posture</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.data_posture}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.data_posture}
               onChange={(e) => onChange(index, 'data_posture', e.target.value)}
@@ -99,7 +153,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Value Pressure */}
           <div className="space-y-2">
-            <Label className="text-sm">Value Pressure</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Value Pressure</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.value_pressure}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.value_pressure}
               onChange={(e) => onChange(index, 'value_pressure', e.target.value)}
@@ -114,7 +178,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Decision Cadence */}
           <div className="space-y-2">
-            <Label className="text-sm">Decision Cadence</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Decision Cadence</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.decision_cadence}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.decision_cadence}
               onChange={(e) => onChange(index, 'decision_cadence', e.target.value)}
@@ -129,7 +203,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Sponsor Strength */}
           <div className="space-y-2">
-            <Label className="text-sm">Sponsor Strength</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Sponsor Strength</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.sponsor_strength}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.sponsor_strength}
               onChange={(e) => onChange(index, 'sponsor_strength', e.target.value)}
@@ -144,7 +228,17 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
 
           {/* Willingness 60d */}
           <div className="space-y-2">
-            <Label className="text-sm">Willingness (60d)</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm">Willingness (60d)</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{tooltips.willingness_60d}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <select
               value={item.willingness_60d}
               onChange={(e) => onChange(index, 'willingness_60d', e.target.value)}
@@ -159,5 +253,6 @@ export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, 
         </div>
       </CardContent>
     </Card>
+    </TooltipProvider>
   );
 };
