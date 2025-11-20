@@ -9,7 +9,7 @@ interface PartnerHeroSectionProps {
 
 export function PartnerHeroSection({ onStartAssessment }: PartnerHeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "INTEGRATE AI LITERACY INTO YOUR PORTFOLIO";
+  const fullText = "WHO'S ABOUT TO WASTE MONEY ON AI?";
   
   useEffect(() => {
     let currentIndex = 0;
@@ -43,7 +43,7 @@ export function PartnerHeroSection({ onStartAssessment }: PartnerHeroSectionProp
           </div>
           
           <p className="text-muted-foreground text-xs md:text-sm font-normal leading-relaxed text-left mb-4 md:mb-6">
-            See which leadership teams will waste AI capital vs. which can make clean decisions. Map cognitive readiness across your portfolio in 15 minutes.
+            See which teams will blow their budget on vendor hype vs. which ones can actually spot good AI from bad. Takes 15 minutes.
           </p>
 
           <div className="pt-4 flex justify-start">

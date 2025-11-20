@@ -26,28 +26,28 @@ serve(async (req) => {
     const sectors = [...new Set(portfolioItems.map((item: any) => item.sector))].join(', ');
     const avgScore = Math.round(portfolioItems.reduce((sum: number, item: any) => sum + item.fit_score, 0) / portfolioItems.length);
     
-    const prompt = `You are a senior AI strategy consultant analyzing a partner's portfolio for leadership cognitive readiness and AI decision-making capability.
+    const prompt = `You're helping a partner figure out which companies in their portfolio are about to waste money on bad AI decisions.
 
 Partner Context:
 - Firm: ${intakeData?.firm_name || 'Partner'}
 - Type: ${intakeData?.partner_type || 'Investment Firm'}
 - Portfolio Sectors: ${sectors}
 - Companies Assessed: ${portfolioItems.length}
-- Average Cognition Score: ${avgScore}/100
+- Average Risk Score: ${avgScore}/100 (higher = more likely to waste money)
 - Timeline: ${intakeData?.urgency_window || 'Next 90 days'}
-- Key Objectives: ${intakeData?.objectives_json?.join(', ') || 'AI literacy upgrade'}
+- Main Concerns: ${intakeData?.objectives_json?.join(', ') || 'Teams wasting AI budget'}
 
-Top Candidates for Cognitive Scaffolding:
+Companies Most Likely to Waste Money:
 ${topCandidates.map((c: any, i: number) => 
-  `${i + 1}. ${c.name} (${c.sector}, ${c.stage}) - Score: ${c.fit_score}/100, Rec: ${c.recommendation}`
+  `${i + 1}. ${c.name} (${c.sector}) - Risk Score: ${c.fit_score}/100, Status: ${c.recommendation}`
 ).join('\n')}
 
-Analyze this portfolio for leadership cognition patterns. Generate 3 highly specific, data-driven insights that:
-1. Identify which leadership teams show mental scaffolding for AI decisions vs. which will likely waste capital on vendor theatre
-2. Surface thinking tensions and blind spots visible in the scoring data (e.g., ambition vs. control, hype vs. discipline)
-3. Suggest tactical next steps focused on upgrading decision quality, not implementation
+Write 3 short, direct insights (2-3 sentences each) that:
+1. Tell them which teams will blow money fast and why
+2. Point out specific thinking problems you see (like believing vendor hype, or panic buying)
+3. Suggest who to talk to first and what to say
 
-Each insight should be 2-3 sentences maximum. Write like a trusted advisor who deeply understands cognitive readiness gaps. Reference specific portfolio patterns (sectors, stages, thinking quality indicators). Focus on preventing capital waste through better leadership thinking, not on technical implementation.
+Write like you're talking to a friend over coffee, not writing a consultant report. Be specific - reference the actual data. Focus on preventing waste, not on technology. Sound like a real human who cares about their money.
 
 Format as JSON:
 {
@@ -69,7 +69,7 @@ Format as JSON:
         messages: [
           { 
             role: 'system', 
-            content: 'You are a senior AI strategy consultant focused on leadership cognition and decision quality. Generate specific, data-driven insights about cognitive readiness gaps in valid JSON format only. No markdown, no code blocks, just pure JSON.'
+            content: 'You help investors spot which companies will waste money on AI. Write in plain English like you\'re talking to a friend. Be specific and direct. No jargon, no consultant-speak. Return valid JSON only - no markdown, no code blocks.'
           },
           { role: 'user', content: prompt }
         ],
@@ -98,12 +98,12 @@ Format as JSON:
       insights = JSON.parse(jsonStr);
     } catch (e) {
       console.error('Failed to parse AI response as JSON:', e);
-      // Fallback to cognitive-focused insights
+      // Fallback to simple insights
       insights = {
         insights: [
-          `Your portfolio shows ${avgScore >= 70 ? 'strong cognitive scaffolding' : 'emerging thinking patterns'} across ${sectors} leadership teams—look for gaps between ambition and decision discipline.`,
-          `${topCandidates.length} leadership teams lack the mental frameworks needed to judge AI decisions properly, making them likely to waste capital on vendor theatre.`,
-          `Start with ${topCandidates[0]?.name || 'top candidates'} to demonstrate how cognitive readiness prevents AI spend waste and builds decision quality.`
+          `You've got ${avgScore >= 70 ? 'some smart teams' : 'several teams at risk'} in ${sectors}. The main issue: they're excited about AI but don't know how to tell good ideas from bad ones.`,
+          `${topCandidates.length} teams are likely to waste money because they'll believe vendor promises or buy something just to "do AI". They need help asking better questions first.`,
+          `Start with ${topCandidates[0]?.name || 'your highest-risk team'} - they're most likely to blow budget in the next 30 days. Talk to them before they sign a contract.`
         ]
       };
     }
@@ -120,8 +120,8 @@ Format as JSON:
       JSON.stringify({ 
         error: errorMessage,
         insights: [
-          'Complete your portfolio cognitive diagnostic to identify which leadership teams will waste AI capital.',
-          'Your portfolio data will reveal thinking patterns and cognitive readiness gaps across your leadership teams.',
+          'Complete your assessment to see which teams are likely to waste money on AI.',
+          'Your portfolio data will show which leaders can spot good AI from bad, and which will fall for vendor hype.',
           'Contact support if this issue persists.'
         ]
       }),

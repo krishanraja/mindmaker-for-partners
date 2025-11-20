@@ -169,15 +169,25 @@ CREATE TABLE partner_portfolio_items (
   name TEXT NOT NULL,
   sector TEXT,
   stage TEXT,
-  ai_posture TEXT NOT NULL,
-  data_posture TEXT NOT NULL,
-  value_pressure TEXT NOT NULL,
-  decision_cadence TEXT NOT NULL,
-  sponsor_strength TEXT NOT NULL,
-  willingness_60d TEXT NOT NULL,
-  fit_score INTEGER NOT NULL,
-  recommendation TEXT NOT NULL,
-  risk_flags_json JSONB DEFAULT '[]'::jsonb
+  hype_vs_discipline TEXT,
+  mental_scaffolding TEXT,
+  decision_quality TEXT,
+  vendor_resistance TEXT,
+  pressure_intensity TEXT,
+  sponsor_thinking TEXT,
+  upgrade_willingness TEXT,
+  cognitive_risk_score INTEGER,
+  capital_at_risk INTEGER,
+  cognitive_readiness INTEGER,
+  fit_score INTEGER,
+  recommendation TEXT,
+  risk_flags_json JSONB DEFAULT '[]'::jsonb,
+  ai_posture TEXT,
+  data_posture TEXT,
+  value_pressure TEXT,
+  decision_cadence TEXT,
+  sponsor_strength TEXT,
+  willingness_60d TEXT
 );
 
 CREATE TABLE partner_plans (
@@ -272,17 +282,17 @@ CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH RO
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-6 sm:py-8">
         <div className="text-center mb-6 sm:mb-8 pt-12 sm:pt-16">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-            Portfolio Cognitive Diagnostic Setup
+            Quick Portfolio Check
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            6 quick fields to map leadership thinking patterns across your portfolio
+            Tell us about your portfolio - we'll show you who's likely to waste money
           </p>
           
           {estimatedCandidates > 0 && (
             <div className="mt-4 flex justify-center">
               <Badge variant="secondary" className="text-base px-4 py-2">
                 <Target className="h-4 w-4 mr-2" />
-                Estimated Cognitive Gaps: {estimatedCandidates}
+                Teams at risk: ~{estimatedCandidates}
               </Badge>
             </div>
           )}
@@ -345,9 +355,9 @@ CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH RO
                 {/* Primary Goal */}
                 <div className="space-y-2">
                   <Label className="text-foreground font-medium text-sm">
-                    Primary Goal <span className="text-destructive">*</span>
+                    What are you worried about? <span className="text-destructive">*</span>
                   </Label>
-                  <p className="text-xs text-muted-foreground mb-2">Select your main objective</p>
+                  <p className="text-xs text-muted-foreground mb-2">Pick what keeps you up at night</p>
                   <div className="flex flex-wrap gap-2">
                     {OBJECTIVE_OPTIONS.map(objective => (
                       <Badge
@@ -366,7 +376,7 @@ CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH RO
                 {/* Timeline */}
                 <div className="space-y-2">
                   <Label className="text-foreground font-medium text-sm">
-                    Timeline <span className="text-destructive">*</span>
+                    How soon will they spend money? <span className="text-destructive">*</span>
                   </Label>
                   <div className="space-y-2">
                     {URGENCY_WINDOWS.map(window => (
@@ -409,7 +419,7 @@ CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH RO
                   className="w-full rounded-xl"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Saving...' : 'Continue to Portfolio Scoring'}
+                  {isSubmitting ? 'Saving...' : 'Continue to Risk Assessment'}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </form>

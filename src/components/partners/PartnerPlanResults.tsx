@@ -77,10 +77,10 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Step 3: Your Partner Plan
+            Your Capital Risk Map
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6">
-            Leadership cognitive diagnostic, decision quality framework, and cognitive scaffolding plan ready to share and export.
+            See which teams will waste money, and what to say to them before they do.
           </p>
           
           {/* Export Actions */}
@@ -104,21 +104,21 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
               className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
             >
               <BarChart3 className="h-4 w-4" />
-              <span>Heatmap</span>
+              <span>Risk Map</span>
             </TabsTrigger>
             <TabsTrigger 
               value="offerpack"
               className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
             >
               <FileText className="h-4 w-4" />
-              <span>Offer Pack</span>
+              <span>The Brief</span>
             </TabsTrigger>
             <TabsTrigger 
               value="plan"
               className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
             >
               <Target className="h-4 w-4" />
-              <span>Co-Delivery</span>
+              <span>Your Plan</span>
             </TabsTrigger>
           </TabsList>
 
@@ -181,9 +181,9 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
           <Card className="shadow-lg border-2 border-primary/20 rounded-2xl bg-gradient-to-br from-primary/10 via-background to-accent/5">
             <CardContent className="p-8 text-center space-y-6">
               <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-foreground">Ready to Move Forward?</h3>
+                <h3 className="text-2xl font-bold text-foreground">Want Help With This?</h3>
                 <p className="text-muted-foreground max-w-xl mx-auto">
-                  Let's discuss how to prevent AI capital waste across your portfolio by upgrading leadership thinking, not just tooling.
+                  Let's talk about which teams to focus on first, and what to say to them.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -194,7 +194,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
                   onClick={() => window.open('https://calendly.com/mindmaker/partner-discussion', '_blank')}
                 >
                   <Target className="mr-2 h-5 w-5" />
-                  Schedule a Discussion
+                  Book a Call
                 </Button>
                 <Button
                   size="lg"
@@ -203,7 +203,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
                   onClick={() => window.location.href = 'mailto:partners@mindmaker.ai?subject=Partnership Opportunity&body=Hi, I just completed the portfolio assessment and would like to discuss next steps.'}
                 >
                   <Send className="mr-2 h-5 w-5" />
-                  Email Us
+                  Send an Email
                 </Button>
               </div>
             </CardContent>

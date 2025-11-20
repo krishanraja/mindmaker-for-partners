@@ -1,12 +1,12 @@
 // Partner Constants - Centralized configuration
 // All hardcoded strings, colors, and options consolidated here
 
-// Cognitive Risk Categories (based on waste risk level)
+// Risk Categories - Plain English
 export const RECOMMENDATION_TYPES = {
-  CRITICAL_RISK: 'Critical - Immediate Intervention',
-  HIGH_RISK: 'High Risk - Scaffolding Required',
-  MEDIUM_RISK: 'Medium Risk - Decision Support',
-  LOW_RISK: 'Low Risk - Monitor'
+  CRITICAL_RISK: 'HIGH RISK - Will Waste Money Fast',
+  HIGH_RISK: 'At Risk - Need Help Soon',
+  MEDIUM_RISK: 'Some Risk - Worth Watching',
+  LOW_RISK: 'Low Risk - Let Them Run'
 } as const;
 
 export const RECOMMENDATION_COLORS = {
@@ -36,12 +36,12 @@ export const SECTOR_OPTIONS = [
 ] as const;
 
 export const OBJECTIVE_OPTIONS = [
-  'De-risk AI capital allocation',
-  'Prevent vendor theatre in portfolio',
-  'Identify cognitive readiness gaps',
-  'Upgrade decision quality across portfolio',
-  'Surface leadership thinking patterns',
-  'Risk mitigation'
+  'Stop teams from wasting AI money',
+  'Spot bad decisions before they happen',
+  'See which leaders will believe vendor hype',
+  'Help teams ask better questions',
+  'Prevent panic buying',
+  'Avoid throwing money at problems'
 ] as const;
 
 export const URGENCY_WINDOWS = [
@@ -51,54 +51,54 @@ export const URGENCY_WINDOWS = [
   '90+ days'
 ] as const;
 
-// New Cognitive Assessment Dimensions
+// Assessment Questions - Plain English
 export const HYPE_VS_DISCIPLINE_OPTIONS = [
-  'All Hype - No Framework',
-  'Hype Dominant',
-  'Balanced',
-  'Discipline Dominant'
+  'Buying the vendor story completely',
+  'Mostly believing vendor promises',
+  'Asking some hard questions',
+  'Very skeptical, challenging everything'
 ] as const;
 
 export const MENTAL_SCAFFOLDING_OPTIONS = [
-  'None - Flying Blind',
-  'Weak - Fragile Models',
-  'Moderate - Some Structure',
-  'Strong - Clear Frameworks'
+  'Unclear thinking - winging it',
+  'Basic ideas but no real framework',
+  'Some structure to their thinking',
+  'Clear frameworks and decision models'
 ] as const;
 
 export const DECISION_QUALITY_OPTIONS = [
-  'Poor - No Rigor',
-  'Weak - Ad Hoc',
-  'Moderate - Inconsistent',
-  'Strong - Systematic'
+  'No real process - just reacting',
+  'Making it up as they go',
+  'Inconsistent - depends on the day',
+  'Thoughtful, systematic approach'
 ] as const;
 
 export const VENDOR_RESISTANCE_OPTIONS = [
-  'Zero - Believes Everything',
-  'Low - Easily Swayed',
-  'Moderate - Questions Some',
-  'High - Deeply Skeptical'
+  'Will believe anything vendors say',
+  'Easily convinced by sales pitches',
+  'Question some things, not others',
+  'Deeply skeptical of all claims'
 ] as const;
 
 export const PRESSURE_INTENSITY_OPTIONS = [
-  'Low - No Urgency',
-  'Medium - Some Pressure',
-  'High - Real Urgency',
-  'Critical - Panic Mode'
+  'No rush - exploring calmly',
+  'Some urgency from above',
+  'Real pressure to do something',
+  'Panic mode - will buy anything'
 ] as const;
 
 export const SPONSOR_THINKING_OPTIONS = [
-  'Weak - Unclear',
-  'Basic - Surface Level',
-  'Good - Some Depth',
-  'Excellent - Sophisticated'
+  'Fuzzy thinking - can\'t articulate clearly',
+  'Surface level understanding only',
+  'Decent grasp of the issues',
+  'Deep, sophisticated thinking'
 ] as const;
 
 export const UPGRADE_WILLINGNESS_OPTIONS = [
-  'Resistant - Defensive',
-  'Reluctant - Skeptical',
-  'Open - Curious',
-  'Eager - Hungry'
+  'Defensive - don\'t tell me what to do',
+  'Skeptical - not interested in advice',
+  'Open minded - willing to learn',
+  'Hungry for help and guidance'
 ] as const;
 
 export const CALENDLY_URL = 'https://calendly.com/krish-raja/mindmaker-meeting';
