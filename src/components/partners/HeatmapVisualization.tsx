@@ -13,14 +13,14 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
   portfolioItems,
   compact = false 
 }) => {
-  // Transform data for scatter plot
+  // Transform data for scatter plot - NEW: Capital at Risk vs Cognitive Readiness
   const chartData = portfolioItems.map(item => ({
     name: item.name,
-    fitScore: item.fit_score,
-    urgency: item.willingness_60d === 'High' ? 100 : item.willingness_60d === 'Medium' ? 65 : 30,
+    capitalAtRisk: item.capital_at_risk || 50,
+    cognitiveReadiness: item.cognitive_readiness || 50,
     recommendation: item.recommendation,
-    sponsor: item.sponsor_strength,
-    pressure: item.value_pressure
+    riskScore: item.cognitive_risk_score || item.fit_score,
+    riskFlags: item.risk_flags?.length || 0
   }));
 
 
@@ -30,10 +30,13 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
       return (
         <div className="bg-background border rounded-lg p-3 shadow-lg">
           <p className="font-bold text-sm">{data.name}</p>
-          <p className="text-xs text-muted-foreground">Fit Score: {data.fitScore}</p>
-          <p className="text-xs text-muted-foreground">Recommendation: {data.recommendation}</p>
-          <p className="text-xs text-muted-foreground">Sponsor: {data.sponsor}</p>
-          <p className="text-xs text-muted-foreground">Pressure: {data.pressure}</p>
+          <p className="text-xs text-muted-foreground">Cognitive Risk: {data.riskScore}/100</p>
+          <p className="text-xs text-muted-foreground">Capital at Risk: {data.capitalAtRisk}/100</p>
+          <p className="text-xs text-muted-foreground">Readiness: {data.cognitiveReadiness}/100</p>
+          <p className="text-xs text-destructive">{data.recommendation}</p>
+          {data.riskFlags > 0 && (
+            <p className="text-xs text-destructive">⚠️ {data.riskFlags} risk flags</p>
+          )}
         </div>
       );
     }
@@ -57,21 +60,21 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis 
             type="number" 
-            dataKey="fitScore" 
-            name="Fit Score" 
+            dataKey="capitalAtRisk" 
+            name="Capital at Risk" 
             unit=""
             domain={[0, 100]}
             tick={{ fontSize: 12 }}
-            label={!compact ? { value: 'Fit Score', position: 'insideBottom', offset: -10, style: { fontSize: 12 } } : undefined}
+            label={!compact ? { value: 'Capital at Risk →', position: 'insideBottom', offset: -10, style: { fontSize: 12 } } : undefined}
           />
           <YAxis 
             type="number" 
-            dataKey="urgency" 
-            name="Urgency" 
+            dataKey="cognitiveReadiness" 
+            name="Cognitive Readiness" 
             unit=""
-            domain={[0, 110]}
+            domain={[0, 100]}
             tick={{ fontSize: 12 }}
-            label={!compact ? { value: 'Urgency', angle: -90, position: 'insideLeft', style: { fontSize: 12 } } : undefined}
+            label={!compact ? { value: '← Cognitive Readiness', angle: -90, position: 'insideLeft', style: { fontSize: 12 } } : undefined}
           />
           <Tooltip content={<CustomTooltip />} />
           {!compact && (
@@ -80,21 +83,22 @@ export const HeatmapVisualization: React.FC<HeatmapVisualizationProps> = ({
               height={36}
               formatter={(value: string) => {
                 switch(value) {
-                  case 'Exec Bootcamp': return 'Exec Bootcamp';
-                  case 'Literacy Sprint': return 'Literacy Sprint';
-                  case 'Diagnostic': return 'Diagnostic';
+                  case 'Critical - Immediate Intervention': return 'Critical Risk';
+                  case 'High Risk - Scaffolding Required': return 'High Risk';
+                  case 'Medium Risk - Decision Support': return 'Medium Risk';
+                  case 'Low Risk - Monitor': return 'Low Risk';
                   default: return value;
                 }
               }}
             />
           )}
           
-          {/* Group by recommendation */}
+          {/* Group by risk level */}
           {[
-            RECOMMENDATION_TYPES.EXEC_BOOTCAMP,
-            RECOMMENDATION_TYPES.LITERACY_SPRINT,
-            RECOMMENDATION_TYPES.DIAGNOSTIC,
-            RECOMMENDATION_TYPES.NOT_NOW
+            RECOMMENDATION_TYPES.CRITICAL_RISK,
+            RECOMMENDATION_TYPES.HIGH_RISK,
+            RECOMMENDATION_TYPES.MEDIUM_RISK,
+            RECOMMENDATION_TYPES.LOW_RISK
           ].map(rec => {
             const filtered = chartData.filter(d => d.recommendation === rec);
             if (filtered.length === 0) return null;

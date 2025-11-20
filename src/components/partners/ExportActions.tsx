@@ -56,10 +56,10 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
   const handleSendToMindmaker = async () => {
     setIsSendingLeads(true);
     try {
-      // Get candidates with Exec Bootcamp or Literacy Sprint recommendations
+      // Get candidates with Critical or High Risk recommendations
       const qualifiedCandidates = portfolioItems.filter(
-        item => item.recommendation === RECOMMENDATION_TYPES.EXEC_BOOTCAMP || 
-                item.recommendation === RECOMMENDATION_TYPES.LITERACY_SPRINT
+        item => item.recommendation === RECOMMENDATION_TYPES.CRITICAL_RISK || 
+                item.recommendation === RECOMMENDATION_TYPES.HIGH_RISK
       );
 
       if (qualifiedCandidates.length === 0) {

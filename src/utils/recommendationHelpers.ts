@@ -4,24 +4,28 @@ import { RECOMMENDATION_TYPES, RECOMMENDATION_COLORS } from '@/constants/partner
 
 export function getRecommendationColor(recommendation: string): string {
   switch (recommendation) {
-    case RECOMMENDATION_TYPES.EXEC_BOOTCAMP:
-      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.EXEC_BOOTCAMP];
-    case RECOMMENDATION_TYPES.LITERACY_SPRINT:
-      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.LITERACY_SPRINT];
-    case RECOMMENDATION_TYPES.DIAGNOSTIC:
-      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.DIAGNOSTIC];
+    case RECOMMENDATION_TYPES.CRITICAL_RISK:
+      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.CRITICAL_RISK];
+    case RECOMMENDATION_TYPES.HIGH_RISK:
+      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.HIGH_RISK];
+    case RECOMMENDATION_TYPES.MEDIUM_RISK:
+      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.MEDIUM_RISK];
+    case RECOMMENDATION_TYPES.LOW_RISK:
+      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.LOW_RISK];
     default:
-      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.NOT_NOW];
+      return RECOMMENDATION_COLORS[RECOMMENDATION_TYPES.LOW_RISK];
   }
 }
 
-export function getRecommendationBadgeVariant(recommendation: string): 'default' | 'secondary' | 'outline' {
+export function getRecommendationBadgeVariant(recommendation: string): 'default' | 'secondary' | 'outline' | 'destructive' {
   switch (recommendation) {
-    case RECOMMENDATION_TYPES.EXEC_BOOTCAMP:
-      return 'default';
-    case RECOMMENDATION_TYPES.LITERACY_SPRINT:
+    case RECOMMENDATION_TYPES.CRITICAL_RISK:
+      return 'destructive';
+    case RECOMMENDATION_TYPES.HIGH_RISK:
+      return 'destructive';
+    case RECOMMENDATION_TYPES.MEDIUM_RISK:
       return 'secondary';
-    case RECOMMENDATION_TYPES.DIAGNOSTIC:
+    case RECOMMENDATION_TYPES.LOW_RISK:
       return 'outline';
     default:
       return 'outline';
@@ -30,23 +34,29 @@ export function getRecommendationBadgeVariant(recommendation: string): 'default'
 
 export function getPreWorkList(recommendation: string): string[] {
   switch (recommendation) {
-    case RECOMMENDATION_TYPES.EXEC_BOOTCAMP:
+    case RECOMMENDATION_TYPES.CRITICAL_RISK:
       return [
-        'Validate executive sponsor understands AI decision frameworks',
-        'Surface leadership team AI thinking tensions',
-        'Schedule cognitive readiness discussion'
+        'Immediate cognitive diagnostic before any capital deployment',
+        'Map leadership thinking patterns and identify blind spots',
+        'Schedule emergency scaffolding intervention call'
       ];
-    case RECOMMENDATION_TYPES.LITERACY_SPRINT:
+    case RECOMMENDATION_TYPES.HIGH_RISK:
       return [
-        'Identify leaders needing decision scaffolding',
-        'Map current mental models around AI',
-        'Schedule thinking framework session'
+        'Assess current mental models for AI decision-making',
+        'Build decision quality frameworks before capital allocation',
+        'Schedule cognitive scaffolding session'
       ];
-    case RECOMMENDATION_TYPES.DIAGNOSTIC:
+    case RECOMMENDATION_TYPES.MEDIUM_RISK:
       return [
-        'Assess baseline leadership AI cognition',
-        'Surface blind spots in AI decision-making',
-        'Schedule readiness assessment call'
+        'Review existing decision frameworks and identify gaps',
+        'Surface leadership thinking tensions around AI',
+        'Schedule decision quality discussion'
+      ];
+    case RECOMMENDATION_TYPES.LOW_RISK:
+      return [
+        'Monitor for changes in cognitive readiness',
+        'Check in quarterly on thinking patterns',
+        'Maintain relationship for future needs'
       ];
     default:
       return ['Further cognitive readiness qualification needed'];

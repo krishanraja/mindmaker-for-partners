@@ -1,18 +1,19 @@
 // Partner Constants - Centralized configuration
 // All hardcoded strings, colors, and options consolidated here
 
+// Cognitive Risk Categories (based on waste risk level)
 export const RECOMMENDATION_TYPES = {
-  EXEC_BOOTCAMP: 'Leadership Diagnostic',
-  LITERACY_SPRINT: 'Decision Upgrade',
-  DIAGNOSTIC: 'Readiness Assessment',
-  NOT_NOW: 'Not now'
+  CRITICAL_RISK: 'Critical - Immediate Intervention',
+  HIGH_RISK: 'High Risk - Scaffolding Required',
+  MEDIUM_RISK: 'Medium Risk - Decision Support',
+  LOW_RISK: 'Low Risk - Monitor'
 } as const;
 
 export const RECOMMENDATION_COLORS = {
-  [RECOMMENDATION_TYPES.EXEC_BOOTCAMP]: 'hsl(var(--primary))',
-  [RECOMMENDATION_TYPES.LITERACY_SPRINT]: 'hsl(var(--chart-2))',
-  [RECOMMENDATION_TYPES.DIAGNOSTIC]: 'hsl(var(--chart-3))',
-  [RECOMMENDATION_TYPES.NOT_NOW]: 'hsl(var(--muted))'
+  [RECOMMENDATION_TYPES.CRITICAL_RISK]: 'hsl(0 84% 60%)', // Red
+  [RECOMMENDATION_TYPES.HIGH_RISK]: 'hsl(25 95% 53%)', // Orange
+  [RECOMMENDATION_TYPES.MEDIUM_RISK]: 'hsl(48 96% 53%)', // Yellow
+  [RECOMMENDATION_TYPES.LOW_RISK]: 'hsl(142 76% 36%)' // Green
 } as const;
 
 export const PARTNER_TYPES = [
@@ -50,52 +51,54 @@ export const URGENCY_WINDOWS = [
   '90+ days'
 ] as const;
 
-export const STAGE_OPTIONS = [
-  'Seed',
-  'Growth',
-  'Mature',
-  'Enterprise'
+// New Cognitive Assessment Dimensions
+export const HYPE_VS_DISCIPLINE_OPTIONS = [
+  'All Hype - No Framework',
+  'Hype Dominant',
+  'Balanced',
+  'Discipline Dominant'
 ] as const;
 
-export const AI_POSTURE_OPTIONS = [
-  'None',
-  'Exploring',
-  'Active',
-  'Leading'
+export const MENTAL_SCAFFOLDING_OPTIONS = [
+  'None - Flying Blind',
+  'Weak - Fragile Models',
+  'Moderate - Some Structure',
+  'Strong - Clear Frameworks'
 ] as const;
 
-export const DATA_POSTURE_OPTIONS = [
-  'Disconnected',
-  'Scattered',
-  'Connected',
-  'Optimized'
+export const DECISION_QUALITY_OPTIONS = [
+  'Poor - No Rigor',
+  'Weak - Ad Hoc',
+  'Moderate - Inconsistent',
+  'Strong - Systematic'
 ] as const;
 
-export const VALUE_PRESSURE_OPTIONS = [
-  'Low',
-  'Medium',
-  'High',
-  'Critical'
+export const VENDOR_RESISTANCE_OPTIONS = [
+  'Zero - Believes Everything',
+  'Low - Easily Swayed',
+  'Moderate - Questions Some',
+  'High - Deeply Skeptical'
 ] as const;
 
-export const DECISION_CADENCE_OPTIONS = [
-  'Slow',
-  'Moderate',
-  'Fast',
-  'Urgent'
+export const PRESSURE_INTENSITY_OPTIONS = [
+  'Low - No Urgency',
+  'Medium - Some Pressure',
+  'High - Real Urgency',
+  'Critical - Panic Mode'
 ] as const;
 
-export const SPONSOR_STRENGTH_OPTIONS = [
-  'None',
-  'Weak',
-  'Moderate',
-  'Strong'
+export const SPONSOR_THINKING_OPTIONS = [
+  'Weak - Unclear',
+  'Basic - Surface Level',
+  'Good - Some Depth',
+  'Excellent - Sophisticated'
 ] as const;
 
-export const WILLINGNESS_OPTIONS = [
-  'Low',
-  'Medium',
-  'High'
+export const UPGRADE_WILLINGNESS_OPTIONS = [
+  'Resistant - Defensive',
+  'Reluctant - Skeptical',
+  'Open - Curious',
+  'Eager - Hungry'
 ] as const;
 
 export const CALENDLY_URL = 'https://calendly.com/krish-raja/mindmaker-meeting';
