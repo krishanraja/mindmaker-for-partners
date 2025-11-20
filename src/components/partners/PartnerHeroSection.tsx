@@ -43,7 +43,7 @@ export function PartnerHeroSection({ onStartAssessment }: PartnerHeroSectionProp
           </div>
           
           <p className="text-muted-foreground text-xs md:text-sm font-normal leading-relaxed text-left mb-4 md:mb-6">
-            Build a portfolio heatmap, partner offer pack, and co-delivery plan in under 15 minutes. Score up to 10 companies and get actionable next steps.
+            See which leadership teams will waste AI capital vs. which can make clean decisions. Map cognitive readiness across your portfolio in 15 minutes.
           </p>
 
           <div className="pt-4 flex justify-start">

@@ -2,9 +2,9 @@
 // All hardcoded strings, colors, and options consolidated here
 
 export const RECOMMENDATION_TYPES = {
-  EXEC_BOOTCAMP: 'Exec Bootcamp',
-  LITERACY_SPRINT: 'Literacy Sprint',
-  DIAGNOSTIC: 'Diagnostic',
+  EXEC_BOOTCAMP: 'Leadership Diagnostic',
+  LITERACY_SPRINT: 'Decision Upgrade',
+  DIAGNOSTIC: 'Readiness Assessment',
   NOT_NOW: 'Not now'
 } as const;
 
@@ -35,11 +35,11 @@ export const SECTOR_OPTIONS = [
 ] as const;
 
 export const OBJECTIVE_OPTIONS = [
-  'Enable portfolio AI adoption',
-  'Generate co-delivery pipeline',
-  'Qualify exec bootcamp leads',
-  'Build partner credibility',
-  'Identify quick wins',
+  'De-risk AI capital allocation',
+  'Prevent vendor theatre in portfolio',
+  'Identify cognitive readiness gaps',
+  'Upgrade decision quality across portfolio',
+  'Surface leadership thinking patterns',
   'Risk mitigation'
 ] as const;
 
