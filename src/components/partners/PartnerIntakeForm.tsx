@@ -272,17 +272,17 @@ CREATE TRIGGER update_plans_timestamp BEFORE UPDATE ON partner_plans FOR EACH RO
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-6 sm:py-8">
         <div className="text-center mb-6 sm:mb-8 pt-12 sm:pt-16">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-            Quick Assessment Setup
+            Portfolio Cognitive Diagnostic Setup
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            6 quick fields to tailor your portfolio readiness plan
+            6 quick fields to map leadership thinking patterns across your portfolio
           </p>
           
           {estimatedCandidates > 0 && (
             <div className="mt-4 flex justify-center">
               <Badge variant="secondary" className="text-base px-4 py-2">
                 <Target className="h-4 w-4 mr-2" />
-                Estimated Sprint candidates: {estimatedCandidates}
+                Estimated Cognitive Gaps: {estimatedCandidates}
               </Badge>
             </div>
           )}

@@ -26,28 +26,28 @@ serve(async (req) => {
     const sectors = [...new Set(portfolioItems.map((item: any) => item.sector))].join(', ');
     const avgScore = Math.round(portfolioItems.reduce((sum: number, item: any) => sum + item.fit_score, 0) / portfolioItems.length);
     
-    const prompt = `You are a senior AI strategy consultant analyzing a partner's portfolio for AI enablement opportunities. 
+    const prompt = `You are a senior AI strategy consultant analyzing a partner's portfolio for leadership cognitive readiness and AI decision-making capability.
 
 Partner Context:
 - Firm: ${intakeData?.firm_name || 'Partner'}
 - Type: ${intakeData?.partner_type || 'Investment Firm'}
 - Portfolio Sectors: ${sectors}
 - Companies Assessed: ${portfolioItems.length}
-- Average Fit Score: ${avgScore}/100
+- Average Cognition Score: ${avgScore}/100
 - Timeline: ${intakeData?.urgency_window || 'Next 90 days'}
-- Key Objectives: ${intakeData?.objectives_json?.join(', ') || 'AI enablement'}
+- Key Objectives: ${intakeData?.objectives_json?.join(', ') || 'AI literacy upgrade'}
 
-Top Candidates:
+Top Candidates for Cognitive Scaffolding:
 ${topCandidates.map((c: any, i: number) => 
   `${i + 1}. ${c.name} (${c.sector}, ${c.stage}) - Score: ${c.fit_score}/100, Rec: ${c.recommendation}`
 ).join('\n')}
 
-Generate 3 highly specific, actionable strategic insights that:
-1. Reference specific portfolio patterns (sectors, stages, readiness levels)
-2. Identify concrete opportunities or risks visible in the data
-3. Suggest tactical next steps that feel personalized and weapons-grade
+Analyze this portfolio for leadership cognition patterns. Generate 3 highly specific, data-driven insights that:
+1. Identify which leadership teams show mental scaffolding for AI decisions vs. which will likely waste capital on vendor theatre
+2. Surface thinking tensions and blind spots visible in the scoring data (e.g., ambition vs. control, hype vs. discipline)
+3. Suggest tactical next steps focused on upgrading decision quality, not implementation
 
-Each insight should be 2-3 sentences maximum. Write like a trusted advisor who deeply understands this portfolio. Be specific, not generic. Use data points from above.
+Each insight should be 2-3 sentences maximum. Write like a trusted advisor who deeply understands cognitive readiness gaps. Reference specific portfolio patterns (sectors, stages, thinking quality indicators). Focus on preventing capital waste through better leadership thinking, not on technical implementation.
 
 Format as JSON:
 {
@@ -69,7 +69,7 @@ Format as JSON:
         messages: [
           { 
             role: 'system', 
-            content: 'You are a senior AI strategy consultant. Generate specific, data-driven insights in valid JSON format only. No markdown, no code blocks, just pure JSON.'
+            content: 'You are a senior AI strategy consultant focused on leadership cognition and decision quality. Generate specific, data-driven insights about cognitive readiness gaps in valid JSON format only. No markdown, no code blocks, just pure JSON.'
           },
           { role: 'user', content: prompt }
         ],
@@ -101,9 +101,9 @@ Format as JSON:
       // Fallback to generic insights
       insights = {
         insights: [
-          `Your portfolio shows ${avgScore >= 70 ? 'strong' : 'emerging'} AI readiness across ${sectors}.`,
-          `${topCandidates.length} companies are ready for immediate AI enablement programs.`,
-          `Focus on ${topCandidates[0]?.name || 'top candidates'} to build momentum and demonstrate ROI quickly.`
+          `Your portfolio shows ${avgScore >= 70 ? 'strong' : 'emerging'} leadership cognitive readiness across ${sectors}.`,
+          `${topCandidates.length} leadership teams would benefit from cognitive scaffolding before major AI capital deployment.`,
+          `Focus on ${topCandidates[0]?.name || 'top candidates'} to demonstrate how thinking frameworks prevent capital waste.`
         ]
       };
     }

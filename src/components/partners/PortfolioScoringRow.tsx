@@ -35,12 +35,12 @@ interface PortfolioScoringRowProps {
 const tooltips = {
   sector: "The primary industry vertical this company operates in",
   stage: "The company's current maturity level and growth stage",
-  ai_posture: "Current state of AI adoption and organizational readiness for AI initiatives",
-  data_posture: "Quality, accessibility, and governance of the company's data infrastructure",
+  ai_posture: "Leadership understanding and decision-making clarity around AI, not deployment status",
+  data_posture: "Leadership clarity on data decisions and governance, not technical stack quality",
   value_pressure: "Urgency to demonstrate measurable ROI and business value from initiatives",
   decision_cadence: "Typical speed of decision-making and ability to move projects forward",
-  sponsor_strength: "Level of executive support and championship for strategic initiatives",
-  willingness_60d: "Company's readiness to engage in a meaningful project within the next 60 days"
+  sponsor_strength: "Does the sponsor have mental scaffolding to make clean AI decisions, or just pressure to 'do something'?",
+  willingness_60d: "Team's openness to upgrade thinking before spending, not just 'yes' to any AI initiative"
 };
 
 export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, index, onChange }) => {

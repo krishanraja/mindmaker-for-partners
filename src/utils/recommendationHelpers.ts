@@ -32,23 +32,23 @@ export function getPreWorkList(recommendation: string): string[] {
   switch (recommendation) {
     case RECOMMENDATION_TYPES.EXEC_BOOTCAMP:
       return [
-        'Confirm CEO/COO sponsor availability',
-        'Secure 90-day objective definition',
-        'Schedule kickoff within 14 days'
+        'Validate executive sponsor understands AI decision frameworks',
+        'Surface leadership team AI thinking tensions',
+        'Schedule cognitive readiness discussion'
       ];
     case RECOMMENDATION_TYPES.LITERACY_SPRINT:
       return [
-        'Identify team leads for sprint',
-        'Map initial AI use cases',
-        'Schedule 60-min alignment call'
+        'Identify leaders needing decision scaffolding',
+        'Map current mental models around AI',
+        'Schedule thinking framework session'
       ];
     case RECOMMENDATION_TYPES.DIAGNOSTIC:
       return [
-        'Secure data access contact',
-        'Define current AI baseline',
-        'Schedule diagnostic session'
+        'Assess baseline leadership AI cognition',
+        'Surface blind spots in AI decision-making',
+        'Schedule readiness assessment call'
       ];
     default:
-      return ['Further qualification needed'];
+      return ['Further cognitive readiness qualification needed'];
   }
 }

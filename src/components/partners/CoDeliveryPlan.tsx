@@ -36,7 +36,7 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
               <p className="text-3xl font-bold text-primary">
                 {topCandidates.filter(c => c.recommendation === RECOMMENDATION_TYPES.EXEC_BOOTCAMP).length}
               </p>
-              <p className="text-sm text-muted-foreground">Bootcamp Ready</p>
+              <p className="text-sm text-muted-foreground">Cognitive Gaps Identified</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">

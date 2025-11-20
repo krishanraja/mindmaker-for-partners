@@ -72,9 +72,9 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
   // Tailored bullets based on partner type and sector
   const getBullets = () => {
     const bullets = [
-      `Accelerate AI confidence in your ${topSector.toLowerCase()} portfolio`,
-      `Qualify exec-ready opportunities through proven diagnostic framework`,
-      `Co-brand deliverables that position your firm as the AI enablement leader`
+      `Identify ${topSector.toLowerCase()} leadership teams likely to waste AI capital before they start`,
+      `Upgrade decision quality using cognitive diagnostics, not vendor promises`,
+      `Position your firm as the cognitive scaffolding partner, not an implementation vendor`
     ];
     return bullets;
   };
@@ -86,7 +86,7 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
         <div className="flex items-center justify-center gap-2 mb-4">
           <Sparkles className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">
-            Accelerate AI confidence where it compounds
+            Prevent AI Capital Waste by Upgrading Leadership Cognition
           </h2>
         </div>
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
@@ -149,9 +149,9 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
         <CardContent className="p-6 space-y-3">
           <h3 className="font-bold text-foreground">First 30 Days</h3>
           <p className="text-sm text-foreground leading-relaxed">
-            We'll run a portfolio diagnostic across your top candidates, identify 3-5 exec-ready opportunities, 
-            and co-create a 90-day AI enablement roadmap. Your team gets full access to frameworks, templates, 
-            and co-brand rights.
+            We'll map leadership thinking patterns across your portfolio, surface cognitive gaps before capital deployment, 
+            and build decision quality frameworks that prevent vendor theatre. Your team gets full access to cognitive 
+            diagnostics, thinking frameworks, and co-brand rights.
           </p>
         </CardContent>
       </Card>
@@ -171,19 +171,19 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
                   size="sm"
                   onClick={() => {
                     const memoText = `TO: Investment Committee / Partner Team
-RE: AI Readiness Portfolio Assessment
+RE: Leadership Cognition Diagnostic
 
 OVERVIEW
-Completed diagnostic assessment across ${portfolioItems.length} portfolio companies. Identified ${portfolioItems.filter(item => item.recommendation !== 'Not Now').length} high-priority opportunities for AI enablement.
+Completed cognitive diagnostic across ${portfolioItems.length} portfolio companies. Identified ${portfolioItems.filter(item => item.recommendation !== 'Not Now').length} leadership teams with cognitive readiness gaps that could lead to wasted AI capital.
 
 TOP PRIORITIES (Next 30 Days)
 ${portfolioItems.slice(0, 3).map((item, i) => `${i + 1}. ${item.name} - ${item.recommendation}
-   → Fit Score: ${item.fit_score}/100
-   → Key Opportunity: ${item.sector || topSector} optimization with ${item.ai_posture} AI posture
-   → Recommended Action: Schedule board-level introduction`).join('\n\n')}
+   → Cognition Score: ${item.fit_score}/100
+   → Key Gap: Leadership team in ${item.sector || topSector} lacks mental scaffolding for AI decisions
+   → Recommended Action: Cognitive readiness discussion before capital deployment`).join('\n\n')}
 
 NEXT STEPS
-Prioritize board meeting introductions for top 3 companies. Use Board Meeting Talking Points to frame the conversation during scheduled check-ins.`;
+Prioritize cognitive readiness discussions for top 3 companies. Use Board Meeting Talking Points to frame the conversation during scheduled check-ins.`;
                     copyToClipboard(memoText, 'Portfolio Memo');
                   }}
                 >
@@ -200,25 +200,25 @@ Prioritize board meeting introductions for top 3 companies. Use Board Meeting Ta
               <div className="bg-muted/30 rounded-lg p-4 text-sm space-y-3">
                 <div className="space-y-2 text-muted-foreground">
                   <p className="font-semibold text-foreground">TO: Investment Committee / Partner Team</p>
-                  <p className="font-semibold text-foreground">RE: AI Readiness Portfolio Assessment</p>
+                  <p className="font-semibold text-foreground">RE: Leadership Cognition Diagnostic</p>
                   <div className="pt-2 space-y-2">
                     <p><strong className="text-foreground">OVERVIEW</strong></p>
-                    <p>Completed diagnostic assessment across {portfolioItems.length} portfolio companies. 
-                    Identified {portfolioItems.filter(item => item.recommendation !== 'Not Now').length} high-priority 
-                    opportunities for AI enablement.</p>
+                    <p>Completed cognitive diagnostic across {portfolioItems.length} portfolio companies. 
+                    Identified {portfolioItems.filter(item => item.recommendation !== 'Not Now').length} leadership teams 
+                    with cognitive readiness gaps that could lead to wasted AI capital.</p>
                     
                     <p className="pt-2"><strong className="text-foreground">TOP PRIORITIES (Next 30 Days)</strong></p>
                     {portfolioItems.slice(0, 3).map((item, i) => (
                       <div key={i} className="pl-4">
                         <p><strong className="text-foreground">{i + 1}. {item.name} - {item.recommendation}</strong></p>
-                        <p className="pl-4">→ Fit Score: {item.fit_score}/100</p>
-                        <p className="pl-4">→ Key Opportunity: {item.sector || topSector} optimization with {item.ai_posture} AI posture</p>
-                        <p className="pl-4">→ Recommended Action: Schedule board-level introduction</p>
+                        <p className="pl-4">→ Cognition Score: {item.fit_score}/100</p>
+                        <p className="pl-4">→ Key Gap: Leadership team in {item.sector || topSector} lacks mental scaffolding for AI decisions</p>
+                        <p className="pl-4">→ Recommended Action: Cognitive readiness discussion before capital deployment</p>
                       </div>
                     ))}
                     
                     <p className="pt-2"><strong className="text-foreground">NEXT STEPS</strong></p>
-                    <p>Prioritize board meeting introductions for top 3 companies. Use Board Meeting Talking Points 
+                    <p>Prioritize cognitive readiness discussions for top 3 companies. Use Board Meeting Talking Points 
                     (below) to frame the conversation during scheduled check-ins.</p>
                   </div>
                 </div>
@@ -243,24 +243,24 @@ Prioritize board meeting introductions for top 3 companies. Use Board Meeting Ta
                   size="sm"
                   onClick={() => {
                     const talkingPointsText = `FOR: [Company Name] - [Next Board Meeting Date]
-AGENDA ITEM: AI Readiness & Quick Win Identification
+AGENDA ITEM: Leadership Cognition & AI Capital Risk Assessment
 
 CONTEXT TO SHARE:
-→ "We ran a portfolio-wide AI diagnostic to help our companies identify high-impact opportunities"
-→ "Based on [Company]'s current stage, data maturity, and goals, you scored [X/100] for AI readiness"
-→ "This puts you in the top tier of our portfolio for AI enablement"
+→ "We mapped leadership thinking patterns across our portfolio to prevent wasted AI capital"
+→ "Based on [Company]'s cognitive readiness and decision frameworks, you scored [X/100]"
+→ "This puts you in a group that would benefit from cognitive scaffolding before major AI investments"
 
-KEY OPPORTUNITY IDENTIFIED:
-→ [Specific recommendation from scoring: Exec Bootcamp/Literacy Sprint/Diagnostic]
-→ Rationale: Strong ${topSector.toLowerCase()} positioning with exec-level engagement potential
+KEY GAP IDENTIFIED:
+→ [Specific recommendation from scoring: Leadership Diagnostic/Decision Upgrade/Readiness Assessment]
+→ Rationale: Leadership team in ${topSector.toLowerCase()} needs mental models to judge AI decisions properly
 
 VALUE PROPOSITION:
-→ 90-day sprint focused on measurable business outcomes
-→ Co-branded deliverable showing our firm's AI enablement leadership
-→ Zero-commitment diagnostic to validate fit
+→ Upgrade decision quality before capital deployment
+→ Prevent vendor theatre through cognitive scaffolding
+→ Zero-commitment readiness discussion to validate fit
 
 NEXT STEP:
-→ "Would you be open to a 15-minute intro call with our partner MindMaker to explore this further?"`;
+→ "Would you be open to a 15-minute call with our partner MindMaker to assess cognitive readiness?"`;
                     copyToClipboard(talkingPointsText, 'Talking Points');
                   }}
                 >
@@ -277,24 +277,24 @@ NEXT STEP:
               <div className="bg-muted/30 rounded-lg p-4 text-sm space-y-3">
                 <div className="space-y-2 text-muted-foreground">
                   <p className="font-semibold text-foreground">FOR: [Company Name] - [Next Board Meeting Date]</p>
-                  <p className="font-semibold text-foreground">AGENDA ITEM: AI Readiness & Quick Win Identification</p>
+                  <p className="font-semibold text-foreground">AGENDA ITEM: Leadership Cognition & AI Capital Risk Assessment</p>
                   
                   <p className="pt-2"><strong className="text-foreground">CONTEXT TO SHARE:</strong></p>
-                  <p>→ "We ran a portfolio-wide AI diagnostic to help our companies identify high-impact opportunities"</p>
-                  <p>→ "Based on [Company]'s current stage, data maturity, and goals, you scored [X/100] for AI readiness"</p>
-                  <p>→ "This puts you in the top tier of our portfolio for AI enablement"</p>
+                  <p>→ "We mapped leadership thinking patterns across our portfolio to prevent wasted AI capital"</p>
+                  <p>→ "Based on [Company]'s cognitive readiness and decision frameworks, you scored [X/100]"</p>
+                  <p>→ "This puts you in a group that would benefit from cognitive scaffolding before major AI investments"</p>
                   
-                  <p className="pt-2"><strong className="text-foreground">KEY OPPORTUNITY IDENTIFIED:</strong></p>
-                  <p>→ [Specific recommendation from scoring: Exec Bootcamp/Literacy Sprint/Diagnostic]</p>
-                  <p>→ Rationale: Strong {topSector.toLowerCase()} positioning with exec-level engagement potential</p>
+                  <p className="pt-2"><strong className="text-foreground">KEY GAP IDENTIFIED:</strong></p>
+                  <p>→ [Specific recommendation from scoring: Leadership Diagnostic/Decision Upgrade/Readiness Assessment]</p>
+                  <p>→ Rationale: Leadership team in {topSector.toLowerCase()} needs mental models to judge AI decisions properly</p>
                   
                   <p className="pt-2"><strong className="text-foreground">VALUE PROPOSITION:</strong></p>
-                  <p>→ 90-day sprint focused on measurable business outcomes</p>
-                  <p>→ Co-branded deliverable showing our firm's AI enablement leadership</p>
-                  <p>→ Zero-commitment diagnostic to validate fit</p>
+                  <p>→ Upgrade decision quality before capital deployment</p>
+                  <p>→ Prevent vendor theatre through cognitive scaffolding</p>
+                  <p>→ Zero-commitment readiness discussion to validate fit</p>
                   
                   <p className="pt-2"><strong className="text-foreground">NEXT STEP:</strong></p>
-                  <p>→ "Would you be open to a 15-minute intro call with our partner MindMaker to explore this further?"</p>
+                  <p>→ "Would you be open to a 15-minute call with our partner MindMaker to assess cognitive readiness?"</p>
                 </div>
               </div>
             </CollapsibleContent>
@@ -317,26 +317,27 @@ NEXT STEP:
                   size="sm"
                   onClick={() => {
                     const summaryText = `[Your Firm Logo] × MindMaker
-AI READINESS ASSESSMENT
+LEADERSHIP COGNITION DIAGNOSTIC
 [Company Name] - ${new Date().toLocaleDateString()}
 
 YOUR SCORE: [X/100] - [Recommendation Category]
 
 WHAT THIS MEANS:
-Your company demonstrates strong readiness for AI enablement in the ${topSector.toLowerCase()} sector. Based on current capabilities, data maturity, and executive engagement, you're positioned to capture high-impact AI opportunities within a 90-day sprint.
+Your leadership team shows [strong/emerging] cognitive readiness for AI decision-making in the ${topSector.toLowerCase()} sector. Based on current thinking patterns, decision frameworks, and mental models, we've identified specific areas where cognitive scaffolding will prevent capital waste and improve decision quality.
 
 RECOMMENDED NEXT STEP: [Program Name]
-A focused 90-day engagement to identify, validate, and deploy your highest-ROI AI opportunities. Includes executive alignment, technical diagnostic, and co-branded deliverables.
+A focused engagement to upgrade leadership thinking before capital deployment. Includes cognitive diagnostics, decision quality frameworks, and mental models that prevent vendor theatre.
 
-EXPECTED OUTCOMES (90 Days):
-✓ 3-5 validated AI opportunities mapped to business objectives
-✓ Executive team aligned on AI strategy and priorities
-✓ 90-day implementation roadmap with clear ownership
+EXPECTED OUTCOMES:
+✓ Leadership team equipped with AI decision frameworks
+✓ Reduced risk of wasted AI capital on vendor promises
+✓ Clear thinking patterns that compound over time
+✓ Ability to judge AI initiatives with skepticism and clarity
 
 NEXT STEPS:
-☐ 15-minute discovery call with MindMaker team
-☐ Review diagnostic framework and methodology
-☐ Schedule kickoff (if aligned)
+☐ 15-minute cognitive readiness call with MindMaker team
+☐ Review thinking framework methodology
+☐ Schedule diagnostic session (if aligned)
 
 CONTACT:
 [Your contact] - [Your firm]
@@ -357,29 +358,30 @@ MindMaker - krish@themindmaker.ai`;
               <div className="bg-muted/30 rounded-lg p-4 text-sm space-y-3">
                 <div className="space-y-2 text-muted-foreground">
                   <p className="font-semibold text-foreground text-center">[Your Firm Logo] × MindMaker</p>
-                  <p className="font-semibold text-foreground text-center text-lg">AI READINESS ASSESSMENT</p>
+                  <p className="font-semibold text-foreground text-center text-lg">LEADERSHIP COGNITION DIAGNOSTIC</p>
                   <p className="text-center">[Company Name] - {new Date().toLocaleDateString()}</p>
                   
                   <p className="pt-2"><strong className="text-foreground">YOUR SCORE: [X/100] - [Recommendation Category]</strong></p>
                   
                   <p className="pt-2"><strong className="text-foreground">WHAT THIS MEANS:</strong></p>
-                  <p>Your company demonstrates strong readiness for AI enablement in the {topSector.toLowerCase()} sector. 
-                  Based on current capabilities, data maturity, and executive engagement, you're positioned to capture 
-                  high-impact AI opportunities within a 90-day sprint.</p>
+                  <p>Your leadership team shows [strong/emerging] cognitive readiness for AI decision-making in the {topSector.toLowerCase()} sector. 
+                  Based on current thinking patterns, decision frameworks, and mental models, we've identified specific areas where 
+                  cognitive scaffolding will prevent capital waste and improve decision quality.</p>
                   
                   <p className="pt-2"><strong className="text-foreground">RECOMMENDED NEXT STEP: [Program Name]</strong></p>
-                  <p>A focused 90-day engagement to identify, validate, and deploy your highest-ROI AI opportunities. 
-                  Includes executive alignment, technical diagnostic, and co-branded deliverables.</p>
+                  <p>A focused engagement to upgrade leadership thinking before capital deployment. Includes cognitive diagnostics, 
+                  decision quality frameworks, and mental models that prevent vendor theatre.</p>
                   
-                  <p className="pt-2"><strong className="text-foreground">EXPECTED OUTCOMES (90 Days):</strong></p>
-                  <p>✓ 3-5 validated AI opportunities mapped to business objectives</p>
-                  <p>✓ Executive team aligned on AI strategy and priorities</p>
-                  <p>✓ 90-day implementation roadmap with clear ownership</p>
+                  <p className="pt-2"><strong className="text-foreground">EXPECTED OUTCOMES:</strong></p>
+                  <p>✓ Leadership team equipped with AI decision frameworks</p>
+                  <p>✓ Reduced risk of wasted AI capital on vendor promises</p>
+                  <p>✓ Clear thinking patterns that compound over time</p>
+                  <p>✓ Ability to judge AI initiatives with skepticism and clarity</p>
                   
                   <p className="pt-2"><strong className="text-foreground">NEXT STEPS:</strong></p>
-                  <p>☐ 15-minute discovery call with MindMaker team</p>
-                  <p>☐ Review diagnostic framework and methodology</p>
-                  <p>☐ Schedule kickoff (if aligned)</p>
+                  <p>☐ 15-minute cognitive readiness call with MindMaker team</p>
+                  <p>☐ Review thinking framework methodology</p>
+                  <p>☐ Schedule diagnostic session (if aligned)</p>
                   
                   <p className="pt-2"><strong className="text-foreground">CONTACT:</strong></p>
                   <p>[Your contact] - [Your firm]</p>
