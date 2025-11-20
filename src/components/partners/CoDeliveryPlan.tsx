@@ -34,9 +34,9 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">
-                {topCandidates.filter(c => c.recommendation === RECOMMENDATION_TYPES.EXEC_BOOTCAMP).length}
+                {topCandidates.filter(c => c.recommendation === RECOMMENDATION_TYPES.CRITICAL_RISK).length}
               </p>
-              <p className="text-sm text-muted-foreground">Cognitive Gaps Identified</p>
+              <p className="text-sm text-muted-foreground">Critical Risk</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-primary">

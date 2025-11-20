@@ -44,7 +44,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
           .from('partner_plans' as any)
           .insert({
             intake_id: intakeId,
-            top_candidates_json: summary.topCandidates
+            top_candidates_json: summary.topRiskCandidates
           } as any)
           .select()
           .single();
@@ -63,7 +63,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
     };
 
     createPlan();
-  }, [intakeId, summary.topCandidates, toast, planCreationAttempted]);
+  }, [intakeId, summary.topRiskCandidates, toast, planCreationAttempted]);
 
   return (
     <div className="bg-background min-h-screen py-8">
@@ -140,7 +140,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
 
           <TabsContent value="plan">
             <CoDeliveryPlan 
-              topCandidates={summary.topCandidates}
+              topCandidates={summary.topRiskCandidates}
               artifacts={{ summary }}
             />
           </TabsContent>

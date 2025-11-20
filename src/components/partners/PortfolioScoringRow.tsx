@@ -4,26 +4,26 @@ import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
 import {
-  SECTOR_OPTIONS,
-  STAGE_OPTIONS,
-  AI_POSTURE_OPTIONS,
-  DATA_POSTURE_OPTIONS,
-  VALUE_PRESSURE_OPTIONS,
-  DECISION_CADENCE_OPTIONS,
-  SPONSOR_STRENGTH_OPTIONS,
-  WILLINGNESS_OPTIONS
+  HYPE_VS_DISCIPLINE_OPTIONS,
+  MENTAL_SCAFFOLDING_OPTIONS,
+  DECISION_QUALITY_OPTIONS,
+  VENDOR_RESISTANCE_OPTIONS,
+  PRESSURE_INTENSITY_OPTIONS,
+  SPONSOR_THINKING_OPTIONS,
+  UPGRADE_WILLINGNESS_OPTIONS,
+  SECTOR_OPTIONS
 } from '@/constants/partnerConstants';
 
 interface PortfolioItemInput {
   name: string;
   sector: string;
-  stage: string;
-  ai_posture: string;
-  data_posture: string;
-  value_pressure: string;
-  decision_cadence: string;
-  sponsor_strength: string;
-  willingness_60d: string;
+  hype_vs_discipline: string;
+  mental_scaffolding: string;
+  decision_quality: string;
+  vendor_resistance: string;
+  pressure_intensity: string;
+  sponsor_thinking: string;
+  upgrade_willingness: string;
 }
 
 interface PortfolioScoringRowProps {
@@ -33,226 +33,239 @@ interface PortfolioScoringRowProps {
 }
 
 const tooltips = {
-  sector: "The primary industry vertical this company operates in",
-  stage: "The company's current maturity level and growth stage",
-  ai_posture: "Leadership understanding and decision-making clarity around AI, not deployment status",
-  data_posture: "Leadership clarity on data decisions and governance, not technical stack quality",
-  value_pressure: "Urgency to demonstrate measurable ROI and business value from initiatives",
-  decision_cadence: "Typical speed of decision-making and ability to move projects forward",
-  sponsor_strength: "Does the sponsor have mental scaffolding to make clean AI decisions, or just pressure to 'do something'?",
-  willingness_60d: "Team's openness to upgrade thinking before spending, not just 'yes' to any AI initiative"
+  hype_vs_discipline: "Does leadership chase AI hype or have disciplined thinking frameworks? Hype = high waste risk.",
+  mental_scaffolding: "What mental models exist for judging AI decisions? None = flying blind, high waste risk.",
+  decision_quality: "How rigorous is their decision-making process? Poor rigor = high waste risk.",
+  vendor_resistance: "How skeptical are they of vendor promises? Low skepticism = easy target for waste.",
+  pressure_intensity: "How urgent is their pressure to deploy AI? Panic mode = bad decisions, high waste.",
+  sponsor_thinking: "How sophisticated is the executive sponsor's thinking? Weak thinking = high waste risk.",
+  upgrade_willingness: "Are they open to upgrading their thinking frameworks? Resistant = poor intervention fit."
 };
 
 export const PortfolioScoringRow: React.FC<PortfolioScoringRowProps> = ({ item, index, onChange }) => {
   return (
-    <TooltipProvider>
-      <Card className="shadow-sm border rounded-xl">
-        <CardContent className="p-4 sm:p-6">
-          <h3 className="font-bold text-foreground mb-4">{item.name}</h3>
-          
-          <div className="grid sm:grid-cols-2 gap-4">
-            {/* Sector */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm">Sector</Label>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{tooltips.sector}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+    <Card className="shadow-sm border rounded-xl">
+      <CardContent className="p-4 space-y-4">
+        <div className="pb-2 border-b">
+          <h3 className="font-bold text-foreground">{item.name}</h3>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          {/* Sector */}
+          <div className="space-y-2">
+            <Label htmlFor={`sector-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+              Sector
+            </Label>
             <select
+              id={`sector-${index}`}
               value={item.sector}
               onChange={(e) => onChange(index, 'sector', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {SECTOR_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {SECTOR_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Stage */}
+          {/* Hype vs Discipline */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Stage</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`hype-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Hype vs Discipline
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.stage}</p>
+                  <p>{tooltips.hype_vs_discipline}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.stage}
-              onChange={(e) => onChange(index, 'stage', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`hype-${index}`}
+              value={item.hype_vs_discipline}
+              onChange={(e) => onChange(index, 'hype_vs_discipline', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {STAGE_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {HYPE_VS_DISCIPLINE_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* AI Posture */}
+          {/* Mental Scaffolding */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">AI Posture</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`scaffolding-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Mental Scaffolding
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.ai_posture}</p>
+                  <p>{tooltips.mental_scaffolding}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.ai_posture}
-              onChange={(e) => onChange(index, 'ai_posture', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`scaffolding-${index}`}
+              value={item.mental_scaffolding}
+              onChange={(e) => onChange(index, 'mental_scaffolding', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {AI_POSTURE_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {MENTAL_SCAFFOLDING_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Data Posture */}
+          {/* Decision Quality */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Data Posture</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`quality-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Decision Quality
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.data_posture}</p>
+                  <p>{tooltips.decision_quality}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.data_posture}
-              onChange={(e) => onChange(index, 'data_posture', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`quality-${index}`}
+              value={item.decision_quality}
+              onChange={(e) => onChange(index, 'decision_quality', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {DATA_POSTURE_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {DECISION_QUALITY_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Value Pressure */}
+          {/* Vendor Resistance */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Value Pressure</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`resistance-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Vendor Resistance
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.value_pressure}</p>
+                  <p>{tooltips.vendor_resistance}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.value_pressure}
-              onChange={(e) => onChange(index, 'value_pressure', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`resistance-${index}`}
+              value={item.vendor_resistance}
+              onChange={(e) => onChange(index, 'vendor_resistance', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {VALUE_PRESSURE_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {VENDOR_RESISTANCE_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Decision Cadence */}
+          {/* Pressure Intensity */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Decision Cadence</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`pressure-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Pressure Intensity
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.decision_cadence}</p>
+                  <p>{tooltips.pressure_intensity}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.decision_cadence}
-              onChange={(e) => onChange(index, 'decision_cadence', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`pressure-${index}`}
+              value={item.pressure_intensity}
+              onChange={(e) => onChange(index, 'pressure_intensity', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {DECISION_CADENCE_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {PRESSURE_INTENSITY_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Sponsor Strength */}
+          {/* Sponsor Thinking Quality */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Sponsor Strength</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`sponsor-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Sponsor Thinking Quality
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.sponsor_strength}</p>
+                  <p>{tooltips.sponsor_thinking}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.sponsor_strength}
-              onChange={(e) => onChange(index, 'sponsor_strength', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`sponsor-${index}`}
+              value={item.sponsor_thinking}
+              onChange={(e) => onChange(index, 'sponsor_thinking', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {SPONSOR_STRENGTH_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {SPONSOR_THINKING_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
 
-          {/* Willingness 60d */}
+          {/* Upgrade Willingness */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-sm">Willingness (60d)</Label>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                  <Label htmlFor={`willingness-${index}`} className="text-xs font-medium text-muted-foreground flex items-center gap-2 cursor-help">
+                    Willingness to Upgrade Thinking
+                    <HelpCircle className="h-3 w-3" />
+                  </Label>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>{tooltips.willingness_60d}</p>
+                  <p>{tooltips.upgrade_willingness}</p>
                 </TooltipContent>
               </Tooltip>
-            </div>
+            </TooltipProvider>
             <select
-              value={item.willingness_60d}
-              onChange={(e) => onChange(index, 'willingness_60d', e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm"
+              id={`willingness-${index}`}
+              value={item.upgrade_willingness}
+              onChange={(e) => onChange(index, 'upgrade_willingness', e.target.value)}
+              className="w-full p-2 border rounded-lg text-sm bg-background"
             >
-              <option value="">Select</option>
-              {WILLINGNESS_OPTIONS.map(option => (
-                <option key={option} value={option}>{option}</option>
+              <option value="">Select...</option>
+              {UPGRADE_WILLINGNESS_OPTIONS.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
           </div>
         </div>
       </CardContent>
     </Card>
-    </TooltipProvider>
   );
 };
