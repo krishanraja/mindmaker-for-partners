@@ -98,12 +98,12 @@ Format as JSON:
       insights = JSON.parse(jsonStr);
     } catch (e) {
       console.error('Failed to parse AI response as JSON:', e);
-      // Fallback to generic insights
+      // Fallback to cognitive-focused insights
       insights = {
         insights: [
-          `Your portfolio shows ${avgScore >= 70 ? 'strong' : 'emerging'} leadership cognitive readiness across ${sectors}.`,
-          `${topCandidates.length} leadership teams would benefit from cognitive scaffolding before major AI capital deployment.`,
-          `Focus on ${topCandidates[0]?.name || 'top candidates'} to demonstrate how thinking frameworks prevent capital waste.`
+          `Your portfolio shows ${avgScore >= 70 ? 'strong cognitive scaffolding' : 'emerging thinking patterns'} across ${sectors} leadership teams—look for gaps between ambition and decision discipline.`,
+          `${topCandidates.length} leadership teams lack the mental frameworks needed to judge AI decisions properly, making them likely to waste capital on vendor theatre.`,
+          `Start with ${topCandidates[0]?.name || 'top candidates'} to demonstrate how cognitive readiness prevents AI spend waste and builds decision quality.`
         ]
       };
     }
@@ -120,8 +120,8 @@ Format as JSON:
       JSON.stringify({ 
         error: errorMessage,
         insights: [
-          'Complete your portfolio assessment to unlock AI-powered insights.',
-          'Your portfolio data will drive personalized strategic recommendations.',
+          'Complete your portfolio cognitive diagnostic to identify which leadership teams will waste AI capital.',
+          'Your portfolio data will reveal thinking patterns and cognitive readiness gaps across your leadership teams.',
           'Contact support if this issue persists.'
         ]
       }),
