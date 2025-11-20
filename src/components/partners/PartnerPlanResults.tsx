@@ -80,7 +80,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
             Step 3: Your Partner Plan
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6">
-            Portfolio heatmap, offer pack, and co-delivery plan ready to share and export.
+            Leadership cognitive diagnostic, decision quality framework, and cognitive scaffolding plan ready to share and export.
           </p>
           
           {/* Export Actions */}
@@ -183,7 +183,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold text-foreground">Ready to Move Forward?</h3>
                 <p className="text-muted-foreground max-w-xl mx-auto">
-                  Let's discuss how we can work together—whether building a custom toolkit for your portfolio or partnering on AI strategy for your top candidates.
+                  Let's discuss how to prevent AI capital waste across your portfolio by upgrading leadership thinking, not just tooling.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
