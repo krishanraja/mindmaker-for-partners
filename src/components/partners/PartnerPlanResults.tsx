@@ -98,24 +98,24 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-8 gap-2 h-auto p-1.5 bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-2xl shadow-xl">
+          <TabsList className="grid w-full grid-cols-3 mb-8 gap-2 h-auto p-1.5 bg-white rounded-xl shadow-md border">
             <TabsTrigger 
               value="heatmap"
-              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 data-[state=active]:bg-ink data-[state=active]:text-white"
             >
               <BarChart3 className="h-4 w-4" />
               <span>Risk Map</span>
             </TabsTrigger>
             <TabsTrigger 
               value="offerpack"
-              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 data-[state=active]:bg-ink data-[state=active]:text-white"
             >
               <FileText className="h-4 w-4" />
               <span>The Brief</span>
             </TabsTrigger>
             <TabsTrigger 
               value="plan"
-              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="relative inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 data-[state=active]:bg-ink data-[state=active]:text-white"
             >
               <Target className="h-4 w-4" />
               <span>Your Plan</span>
@@ -178,7 +178,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
 
         {/* Next Steps CTA */}
         <div className="max-w-3xl mx-auto mt-12">
-          <Card className="shadow-lg border-2 border-primary/20 rounded-2xl bg-gradient-to-br from-primary/10 via-background to-accent/5">
+          <Card className="shadow-lg border-2 border-mint/20 rounded-xl bg-gradient-to-br from-mint/10 via-background to-mint/5">
             <CardContent className="p-8 text-center space-y-6">
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold text-foreground">Want Help With This?</h3>
@@ -190,7 +190,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
                 <Button
                   size="lg"
                   variant="default"
-                  className="rounded-xl"
+                  className="rounded-lg"
                   onClick={() => window.open('https://calendly.com/mindmaker/partner-discussion', '_blank')}
                 >
                   <Target className="mr-2 h-5 w-5" />
@@ -199,7 +199,7 @@ export const PartnerPlanResults: React.FC<PartnerPlanResultsProps> = ({
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-xl"
+                  className="rounded-lg"
                   onClick={() => window.location.href = 'mailto:partners@mindmaker.ai?subject=Partnership Opportunity&body=Hi, I just completed the portfolio assessment and would like to discuss next steps.'}
                 >
                   <Send className="mr-2 h-5 w-5" />

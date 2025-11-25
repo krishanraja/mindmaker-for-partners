@@ -19,26 +19,26 @@
 
 @layer base {
   :root {
-    /* === BASE COLORS - Soft Premium Palette === */
-    --background: 252 100% 98%;        /* Soft lavender white #F8F7FF */
-    --foreground: 240 18% 20%;         /* Deep charcoal */
-    --muted: 252 60% 96%;              /* Very light lavender */
-    --muted-foreground: 215 28% 25%;   /* Muted gray #2e3a4d */
+    /* === BASE COLORS - Ink & Mint Palette === */
+    --background: 60 9% 96%;           /* Off-white #F7F7F5 */
+    --foreground: 210 58% 11%;         /* Ink #0e1a2b */
+    --muted: 60 5% 90%;                /* Light grey #E5E5E3 */
+    --muted-foreground: 210 7% 62%;    /* Mid grey #9AA0A6 */
 
-    /* === BRAND SYSTEM - Premium Purple === */
-    --primary: 248 73% 67%;            /* Primary purple #667eea */
-    --primary-100: 252 80% 97%;        /* Ultra light purple */
-    --primary-200: 252 75% 92%;        /* Very light purple */
-    --primary-300: 252 73% 85%;        /* Light purple */
-    --primary-400: 252 72% 78%;        /* Medium-light purple */
-    --primary-600: 252 70% 62%;        /* Medium purple */
-    --primary-700: 252 68% 54%;        /* Darker purple */
+    /* === BRAND SYSTEM - Ink & Mint === */
+    --primary: 210 58% 11%;            /* Ink #0e1a2b */
+    --primary-100: 60 9% 96%;          /* Off-white */
+    --primary-200: 60 5% 90%;          /* Light grey */
+    --primary-300: 210 7% 62%;         /* Mid grey */
+    --primary-400: 200 5% 21%;         /* Graphite */
+    --primary-600: 210 58% 11%;        /* Ink */
+    --primary-700: 210 58% 8%;         /* Darker ink */
     --primary-foreground: 0 0% 100%;   /* White */
 
-    /* === BRAND ACCENT === */
-    --accent: 264 42% 52%;             /* Deep purple */
-    --accent-400: 264 40% 62%;
-    --accent-foreground: 0 0% 100%;
+    /* === BRAND ACCENT - Mint === */
+    --accent: 158 82% 73%;             /* Mint #7ef4c2 */
+    --accent-400: 158 82% 80%;         /* Lighter mint */
+    --accent-foreground: 210 58% 11%; /* Ink text on mint */
 
     /* === SEMANTIC COLORS === */
     --destructive: 0 84% 60%;
@@ -46,26 +46,32 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    /* === SURFACE COLORS - Premium Cards === */
+    /* === SURFACE COLORS - Clean Cards === */
     --card: 0 0% 100%;                 /* Pure white */
     --card-foreground: var(--foreground);
-    --border: 252 40% 92%;             /* Soft purple border */
-    --ring: 252 71% 70%;
-    --radius: 1.25rem;                 /* Generous rounded corners */
+    --border: 60 5% 90%;               /* Light grey border */
+    --ring: 158 82% 73%;               /* Mint ring */
+    --radius: 0.5rem;                  /* 8px rounded corners */
 
     /* === INPUT & POPOVER === */
-    --input: 252 40% 92%;
+    --input: 60 5% 90%;
     --popover: 0 0% 100%;
     --popover-foreground: var(--foreground);
     
     /* === SECONDARY SYSTEM === */
-    --secondary: 252 60% 96%;          /* Soft lavender */
+    --secondary: 60 5% 90%;            /* Light grey */
     --secondary-foreground: var(--foreground);
 
-    /* === PREMIUM EFFECTS === */
-    --shadow-sm: 0 2px 8px hsl(252 71% 70% / 0.08);
-    --shadow-md: 0 4px 16px hsl(252 71% 70% / 0.12);
-    --shadow-lg: 0 8px 32px hsl(252 71% 70% / 0.16);
+    /* === NEUTRAL SHADOWS === */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    
+    /* === NEW COLOR TOKENS === */
+    --ink: 210 58% 11%;                /* #0e1a2b */
+    --mint: 158 82% 73%;               /* #7ef4c2 */
+    --off-white: 60 9% 96%;            /* #F7F7F5 */
+    --graphite: 200 5% 21%;            /* #333639 */
     
     /* === PREMIUM LEADERSHIP TIERS === */
     --tier-orchestrator: 256 92% 65%;
@@ -210,11 +216,11 @@ html {
 
   /* === GLASS MORPHISM UTILITIES === */
   .glass-card {
-    background: hsl(var(--background) / 0.95) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid hsl(var(--border) / 0.3) !important;
-    border-radius: 1rem !important;
-    box-shadow: 0 8px 32px hsl(var(--foreground) / 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
   }
 
   .glass-card-dark {
@@ -271,42 +277,42 @@ html {
 
   /* === PREMIUM HERO SECTION === */
   .hero-section-premium {
-    background: hsl(var(--background));
+    background: hsl(var(--ink));
     position: relative;
     min-height: 100vh;
   }
 
   .btn-hero-cta {
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: hsl(var(--mint));
+    color: hsl(var(--ink));
     border: none;
     padding: 1rem 2.5rem;
     font-size: 1.125rem;
     font-weight: 600;
-    border-radius: 9999px;
+    border-radius: 0.5rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 16px hsl(var(--primary) / 0.2);
+    box-shadow: 0 4px 16px rgba(126, 244, 194, 0.3);
   }
   
   .btn-hero-cta:hover {
-    background: hsl(var(--primary-600));
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px hsl(var(--primary) / 0.3);
+    background: hsl(var(--mint) / 0.9);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(126, 244, 194, 0.4);
   }
 
   /* === PREMIUM BADGE/TAG === */
   .premium-badge {
-    background: hsl(var(--primary-200));
-    color: hsl(var(--primary));
+    background: hsl(var(--mint));
+    color: hsl(var(--ink));
     padding: 0.5rem 1.25rem;
-    border-radius: 9999px;
+    border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.025em;
     text-transform: uppercase;
   }
 
-  /* === PREMIUM HERO TEXT WITH SHIMMER === */
+  /* === PREMIUM HERO TEXT === */
   .premium-hero-text {
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 1.5rem;
@@ -317,20 +323,7 @@ html {
     max-width: 42rem;
     margin-left: auto;
     margin-right: auto;
-    
-    background: linear-gradient(
-      110deg,
-      hsl(var(--primary)),
-      45%,
-      hsl(var(--primary-400)),
-      55%,
-      hsl(var(--primary))
-    );
-    background-size: 250% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 8s ease-in-out infinite;
+    color: hsl(var(--foreground));
   }
 
   @media (min-width: 640px) {

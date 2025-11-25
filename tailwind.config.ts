@@ -38,7 +38,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           400: "hsl(var(--accent-400))",
-          foreground: "white",
+          foreground: "hsl(var(--accent-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -56,6 +56,10 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        ink: "hsl(var(--ink))",
+        mint: "hsl(var(--mint))",
+        "off-white": "hsl(var(--off-white))",
+        graphite: "hsl(var(--graphite))",
       },
       borderRadius: {
         lg: "var(--radius)",

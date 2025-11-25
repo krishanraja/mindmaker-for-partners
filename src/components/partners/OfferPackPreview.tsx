@@ -113,10 +113,10 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
       </Card>
 
       {/* AI-Powered Strategic Insights */}
-      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 border-primary/20">
+      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-mint/10 via-mint/5 to-mint/5 border-mint/20">
         <CardContent className="p-6 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <Zap className="h-5 w-5 text-primary" />
+            <Zap className="h-5 w-5 text-mint" />
             <h3 className="font-bold text-foreground">What We See In Your Portfolio</h3>
             <Badge variant="secondary" className="ml-auto text-xs">AI Analysis</Badge>
           </div>
@@ -130,8 +130,8 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
           ) : (
             <ul className="space-y-3">
               {aiInsights.map((insight, i) => (
-                <li key={i} className="flex items-start gap-3 bg-background/60 backdrop-blur-sm rounded-lg p-4 border border-primary/10">
-                  <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <li key={i} className="flex items-start gap-3 bg-background/60 backdrop-blur-sm rounded-lg p-4 border border-mint/10">
+                  <Sparkles className="h-4 w-4 text-mint mt-0.5 flex-shrink-0" />
                   <span className="text-sm text-foreground leading-relaxed">{insight}</span>
                 </li>
               ))}
@@ -145,7 +145,7 @@ export const OfferPackPreview: React.FC<OfferPackPreviewProps> = ({
       </Card>
 
       {/* First 30 Days Promise */}
-      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-primary/5 to-primary/10">
+      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-mint/5 to-mint/10">
         <CardContent className="p-6 space-y-3">
           <h3 className="font-bold text-foreground">What Happens Next</h3>
           <p className="text-sm text-foreground leading-relaxed">
