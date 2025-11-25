@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg",
+        default: "bg-ink text-white hover:bg-ink/90 shadow-md hover:shadow-lg",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-mint text-mint hover:bg-mint/20",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-primary text-primary-foreground hover:bg-accent transform hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold",
-        "hero-primary": "bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold",
+        ghost: "hover:bg-accent/10 hover:text-accent-foreground",
+        link: "text-mint underline-offset-4 hover:underline",
+        hero: "bg-mint text-ink hover:bg-mint/90 transform hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold",
+        "hero-primary": "bg-mint text-ink hover:bg-mint/90 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold",
         "hero-secondary": "bg-transparent text-white border-2 border-white/30 hover:bg-white/10 hover:border-white/50 shadow-md hover:shadow-lg transition-all duration-300 font-medium backdrop-blur-sm",
-        cta: "bg-accent text-accent-foreground hover:bg-accent/90 shadow-md hover:shadow-lg font-semibold",
-        enterprise: "bg-card text-card-foreground border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 shadow-sm hover:shadow-md",
+        cta: "bg-mint text-ink hover:bg-mint/90 shadow-md hover:shadow-lg font-semibold transform hover:scale-105 transition-all duration-300",
+        enterprise: "bg-card text-card-foreground border-2 border-ink/20 hover:border-ink/40 hover:bg-ink/5 shadow-sm hover:shadow-md",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -25,21 +25,21 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
   return (
     <div className="space-y-6">
       {/* Summary Stats */}
-      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-primary/5 to-primary/10">
+      <Card className="shadow-sm border rounded-xl bg-gradient-to-br from-mint/5 to-mint/10">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-3xl font-bold text-primary">{topCandidates.length}</p>
+              <p className="text-3xl font-bold text-ink">{topCandidates.length}</p>
               <p className="text-sm text-muted-foreground">Top Candidates</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-primary">
+              <p className="text-3xl font-bold text-ink">
                 {topCandidates.filter(c => c.recommendation === RECOMMENDATION_TYPES.CRITICAL_RISK).length}
               </p>
               <p className="text-sm text-muted-foreground">Critical Risk</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-primary">
+              <p className="text-3xl font-bold text-ink">
                 {Math.round(topCandidates.reduce((sum, c) => sum + c.fit_score, 0) / topCandidates.length)}
               </p>
               <p className="text-sm text-muted-foreground">Avg Fit Score</p>
@@ -51,7 +51,7 @@ export const CoDeliveryPlan: React.FC<CoDeliveryPlanProps> = ({ topCandidates, a
       {/* Top Candidates */}
       <div className="space-y-4">
         <h3 className="font-bold text-foreground flex items-center gap-2">
-          <Target className="h-5 w-5 text-primary" />
+          <Target className="h-5 w-5 text-mint" />
           Priority Candidates
         </h3>
         
