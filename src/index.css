@@ -216,9 +216,9 @@ html {
 
   /* === GLASS MORPHISM UTILITIES === */
   .glass-card {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: rgba(255, 255, 255, 0.6) !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
     border-radius: 0.5rem !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
   }
@@ -277,7 +277,7 @@ html {
 
   /* === PREMIUM HERO SECTION === */
   .hero-section-premium {
-    background: hsl(var(--ink));
+    background: hsl(var(--background));
     position: relative;
     min-height: 100vh;
   }
