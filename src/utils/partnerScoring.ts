@@ -1,6 +1,30 @@
-// Partner Portfolio Cognitive Risk Scoring Engine
-// Inverted logic: High AI activity + Low cognitive scaffolding = HIGH WASTE RISK
+/**
+ * Partner Portfolio Cognitive Risk Scoring Engine
+ * 
+ * Calculates cognitive risk scores for portfolio companies to identify
+ * which teams are likely to waste money on poor AI decisions.
+ * 
+ * Scoring Logic: High AI activity + Low cognitive scaffolding = HIGH WASTE RISK
+ * 
+ * @module utils/partnerScoring
+ * 
+ * @example
+ * ```typescript
+ * import { scorePortfolio, getPortfolioSummary } from '@/utils/partnerScoring';
+ * 
+ * const items = [{ name: 'Acme', hype_vs_discipline: 'Balanced', ... }];
+ * const scored = scorePortfolio(items);
+ * const summary = getPortfolioSummary(scored);
+ * ```
+ */
 
+// ============================================================================
+// Type Definitions
+// ============================================================================
+
+/**
+ * Raw portfolio item before scoring
+ */
 export interface PortfolioItem {
   name: string;
   sector?: string;
@@ -14,94 +38,173 @@ export interface PortfolioItem {
   upgrade_willingness: string;
 }
 
+/**
+ * Portfolio item with calculated risk scores and recommendations
+ */
 export interface ScoredPortfolioItem extends PortfolioItem {
-  cognitive_risk_score: number; // 0-100 where 100 = maximum waste risk
-  capital_at_risk: number; // 0-100 based on pressure + hype
-  cognitive_readiness: number; // 0-100 based on scaffolding + quality
+  /** Overall cognitive risk score (0-100, higher = more risk) */
+  cognitive_risk_score: number;
+  /** Capital at risk based on pressure and hype (0-100) */
+  capital_at_risk: number;
+  /** Cognitive readiness based on scaffolding and quality (0-100) */
+  cognitive_readiness: number;
+  /** Text recommendation for action */
   recommendation: string;
+  /** Array of specific risk flags */
   risk_flags: string[];
-  // Legacy compatibility
-  fit_score: number; // Map cognitive_risk_score for backwards compatibility
+  /** Legacy compatibility score (inverse of cognitive_risk_score) */
+  fit_score: number;
 }
 
-// Hype vs Discipline (INVERTED: More hype = higher risk)
+/**
+ * Summary statistics for a scored portfolio
+ */
+export interface PortfolioSummary {
+  totalCompanies: number;
+  criticalRiskCount: number;
+  highRiskCount: number;
+  mediumRiskCount: number;
+  lowRiskCount: number;
+  averageRiskScore: number;
+  topRiskCandidates: ScoredPortfolioItem[];
+}
+
+// ============================================================================
+// Dimension Scoring Functions
+// Each function maps a string input to a numeric risk score.
+// Higher scores = higher risk.
+// ============================================================================
+
+/**
+ * Score hype vs discipline dimension
+ * More hype = higher risk of poor decisions
+ * 
+ * @param hype - The hype_vs_discipline field value
+ * @returns Risk score (0-25)
+ */
 function hypeRiskScore(hype: string): number {
   const scores: Record<string, number> = {
-    'All Hype - No Framework': 25, // Maximum risk
+    'All Hype - No Framework': 25,
     'Hype Dominant': 18,
     'Balanced': 8,
-    'Discipline Dominant': 0 // Minimum risk
+    'Discipline Dominant': 0
   };
-  return scores[hype] || 12;
+  return scores[hype] ?? 12; // Default to moderate risk
 }
 
-// Mental Scaffolding (INVERTED: Less scaffolding = higher risk)
+/**
+ * Score mental scaffolding dimension
+ * Less scaffolding = higher risk of cognitive blind spots
+ * 
+ * @param scaffolding - The mental_scaffolding field value
+ * @returns Risk score (0-25)
+ */
 function scaffoldingRiskScore(scaffolding: string): number {
   const scores: Record<string, number> = {
-    'None - Flying Blind': 25, // Maximum risk
+    'None - Flying Blind': 25,
     'Weak - Fragile Models': 18,
     'Moderate - Some Structure': 10,
-    'Strong - Clear Frameworks': 0 // Minimum risk
+    'Strong - Clear Frameworks': 0
   };
-  return scores[scaffolding] || 15;
+  return scores[scaffolding] ?? 15;
 }
 
-// Decision Quality (INVERTED: Poor quality = higher risk)
+/**
+ * Score decision quality dimension
+ * Poor quality = higher risk of bad outcomes
+ * 
+ * @param quality - The decision_quality field value
+ * @returns Risk score (0-20)
+ */
 function decisionQualityRiskScore(quality: string): number {
   const scores: Record<string, number> = {
-    'Poor - No Rigor': 20, // Maximum risk
+    'Poor - No Rigor': 20,
     'Weak - Ad Hoc': 15,
     'Moderate - Inconsistent': 8,
-    'Strong - Systematic': 0 // Minimum risk
+    'Strong - Systematic': 0
   };
-  return scores[quality] || 12;
+  return scores[quality] ?? 12;
 }
 
-// Vendor Resistance (INVERTED: Low resistance = higher risk)
+/**
+ * Score vendor resistance dimension
+ * Low resistance = higher risk of being sold bad solutions
+ * 
+ * @param resistance - The vendor_resistance field value
+ * @returns Risk score (0-15)
+ */
 function vendorRiskScore(resistance: string): number {
   const scores: Record<string, number> = {
-    'Zero - Believes Everything': 15, // Maximum risk
+    'Zero - Believes Everything': 15,
     'Low - Easily Swayed': 10,
     'Moderate - Questions Some': 5,
-    'High - Deeply Skeptical': 0 // Minimum risk
+    'High - Deeply Skeptical': 0
   };
-  return scores[resistance] || 8;
+  return scores[resistance] ?? 8;
 }
 
-// Pressure Intensity (More pressure = higher risk of panic decisions)
+/**
+ * Score pressure intensity dimension
+ * More pressure = higher risk of panic decisions
+ * 
+ * @param pressure - The pressure_intensity field value
+ * @returns Risk score (0-15)
+ */
 function pressureRiskScore(pressure: string): number {
   const scores: Record<string, number> = {
     'Low - No Urgency': 0,
     'Medium - Some Pressure': 5,
     'High - Real Urgency': 10,
-    'Critical - Panic Mode': 15 // Maximum risk
+    'Critical - Panic Mode': 15
   };
-  return scores[pressure] || 5;
+  return scores[pressure] ?? 5;
 }
 
-// Sponsor Thinking (INVERTED: Weak thinking = higher risk)
+/**
+ * Score sponsor thinking dimension
+ * Weak thinking = higher risk of misdirected investment
+ * 
+ * @param thinking - The sponsor_thinking field value
+ * @returns Risk score (0-10)
+ */
 function sponsorRiskScore(thinking: string): number {
   const scores: Record<string, number> = {
-    'Weak - Unclear': 10, // Maximum risk
+    'Weak - Unclear': 10,
     'Basic - Surface Level': 7,
     'Good - Some Depth': 3,
-    'Excellent - Sophisticated': 0 // Minimum risk
+    'Excellent - Sophisticated': 0
   };
-  return scores[thinking] || 6;
+  return scores[thinking] ?? 6;
 }
 
-// Upgrade Willingness (INVERTED: Resistant = higher risk)
+/**
+ * Score upgrade willingness dimension
+ * Resistant = higher risk (can't be helped)
+ * 
+ * @param willingness - The upgrade_willingness field value
+ * @returns Risk score (0-5)
+ */
 function willingnessRiskScore(willingness: string): number {
   const scores: Record<string, number> = {
-    'Resistant - Defensive': 5, // Maximum risk (can't be helped)
+    'Resistant - Defensive': 5,
     'Reluctant - Skeptical': 3,
     'Open - Curious': 1,
-    'Eager - Hungry': 0 // Minimum risk (ready to learn)
+    'Eager - Hungry': 0
   };
-  return scores[willingness] || 2;
+  return scores[willingness] ?? 2;
 }
 
-// Calculate Cognitive Risk Score (0-100, where 100 = maximum waste risk)
+// ============================================================================
+// Aggregate Calculation Functions
+// ============================================================================
+
+/**
+ * Calculate the overall cognitive risk score
+ * Sums all dimension scores and clamps to 0-100
+ * 
+ * @param item - Portfolio item to score
+ * @returns Cognitive risk score (0-100, higher = more waste risk)
+ */
 export function calculateCognitiveRiskScore(item: PortfolioItem): number {
   let riskScore = 0;
   
@@ -116,7 +219,13 @@ export function calculateCognitiveRiskScore(item: PortfolioItem): number {
   return Math.min(100, Math.max(0, riskScore));
 }
 
-// Calculate Capital at Risk (pressure + hype)
+/**
+ * Calculate capital at risk based on pressure and hype
+ * High pressure + high hype = money will be spent rashly
+ * 
+ * @param item - Portfolio item to score
+ * @returns Capital at risk score (0-100)
+ */
 export function calculateCapitalAtRisk(item: PortfolioItem): number {
   const pressureScore = item.pressure_intensity === 'Critical - Panic Mode' ? 50 :
                         item.pressure_intensity === 'High - Real Urgency' ? 35 :
@@ -129,7 +238,13 @@ export function calculateCapitalAtRisk(item: PortfolioItem): number {
   return Math.min(100, pressureScore + hypeScore);
 }
 
-// Calculate Cognitive Readiness (scaffolding + decision quality)
+/**
+ * Calculate cognitive readiness
+ * Strong scaffolding + good decision quality = ready to make good choices
+ * 
+ * @param item - Portfolio item to score
+ * @returns Cognitive readiness score (0-100, higher = more ready)
+ */
 export function calculateCognitiveReadiness(item: PortfolioItem): number {
   const scaffoldingScore = item.mental_scaffolding === 'Strong - Clear Frameworks' ? 50 :
                            item.mental_scaffolding === 'Moderate - Some Structure' ? 35 :
@@ -142,8 +257,19 @@ export function calculateCognitiveReadiness(item: PortfolioItem): number {
   return Math.min(100, scaffoldingScore + qualityScore);
 }
 
-// Get recommendation based on cognitive risk score
-export function getRecommendation(item: PortfolioItem, cognitiveRiskScore: number, capitalAtRisk: number): string {
+/**
+ * Generate a recommendation based on risk scores
+ * 
+ * @param item - Portfolio item
+ * @param cognitiveRiskScore - Calculated cognitive risk score
+ * @param capitalAtRisk - Calculated capital at risk score
+ * @returns Recommendation string
+ */
+export function getRecommendation(
+  item: PortfolioItem, 
+  cognitiveRiskScore: number, 
+  capitalAtRisk: number
+): string {
   // Critical: High risk + High capital at risk
   if (cognitiveRiskScore >= 70 && capitalAtRisk >= 60) {
     return 'Critical - Immediate Intervention';
@@ -163,7 +289,13 @@ export function getRecommendation(item: PortfolioItem, cognitiveRiskScore: numbe
   return 'Low Risk - Monitor';
 }
 
-// Get risk flags for a portfolio item
+/**
+ * Generate specific risk flags for a portfolio item
+ * Identifies critical issues that need attention
+ * 
+ * @param item - Portfolio item to analyze
+ * @returns Array of risk flag strings
+ */
 export function getRiskFlags(item: PortfolioItem): string[] {
   const flags: string[] = [];
   
@@ -194,7 +326,17 @@ export function getRiskFlags(item: PortfolioItem): string[] {
   return flags;
 }
 
-// Score an entire portfolio
+// ============================================================================
+// Portfolio-Level Functions
+// ============================================================================
+
+/**
+ * Score an entire portfolio of items
+ * Applies all scoring logic and generates recommendations
+ * 
+ * @param items - Array of portfolio items to score
+ * @returns Array of scored portfolio items
+ */
 export function scorePortfolio(items: PortfolioItem[]): ScoredPortfolioItem[] {
   return items.map(item => {
     const cognitive_risk_score = calculateCognitiveRiskScore(item);
@@ -216,22 +358,28 @@ export function scorePortfolio(items: PortfolioItem[]): ScoredPortfolioItem[] {
   });
 }
 
-// Get summary statistics for a scored portfolio
-export interface PortfolioSummary {
-  totalCompanies: number;
-  criticalRiskCount: number;
-  highRiskCount: number;
-  mediumRiskCount: number;
-  lowRiskCount: number;
-  averageRiskScore: number;
-  topRiskCandidates: ScoredPortfolioItem[];
-}
-
+/**
+ * Get summary statistics for a scored portfolio
+ * 
+ * @param scoredItems - Array of scored portfolio items
+ * @returns Portfolio summary with counts and top risks
+ */
 export function getPortfolioSummary(scoredItems: ScoredPortfolioItem[]): PortfolioSummary {
-  const criticalRiskCount = scoredItems.filter(i => i.recommendation === 'Critical - Immediate Intervention').length;
-  const highRiskCount = scoredItems.filter(i => i.recommendation === 'High Risk - Scaffolding Required').length;
-  const mediumRiskCount = scoredItems.filter(i => i.recommendation === 'Medium Risk - Decision Support').length;
-  const lowRiskCount = scoredItems.filter(i => i.recommendation === 'Low Risk - Monitor').length;
+  const criticalRiskCount = scoredItems.filter(
+    i => i.recommendation === 'Critical - Immediate Intervention'
+  ).length;
+  
+  const highRiskCount = scoredItems.filter(
+    i => i.recommendation === 'High Risk - Scaffolding Required'
+  ).length;
+  
+  const mediumRiskCount = scoredItems.filter(
+    i => i.recommendation === 'Medium Risk - Decision Support'
+  ).length;
+  
+  const lowRiskCount = scoredItems.filter(
+    i => i.recommendation === 'Low Risk - Monitor'
+  ).length;
   
   const averageRiskScore = scoredItems.length > 0
     ? Math.round(scoredItems.reduce((sum, item) => sum + item.cognitive_risk_score, 0) / scoredItems.length)
@@ -254,7 +402,18 @@ export function getPortfolioSummary(scoredItems: ScoredPortfolioItem[]): Portfol
   };
 }
 
-// Legacy compatibility export
+// ============================================================================
+// Legacy Compatibility
+// ============================================================================
+
+/**
+ * Calculate legacy fit score (inverse of cognitive risk)
+ * Maintained for backwards compatibility with existing code
+ * 
+ * @param item - Portfolio item to score
+ * @returns Fit score (0-100, higher = better fit)
+ * @deprecated Use calculateCognitiveRiskScore instead
+ */
 export function calculateFitScore(item: PortfolioItem): number {
   return 100 - calculateCognitiveRiskScore(item);
 }

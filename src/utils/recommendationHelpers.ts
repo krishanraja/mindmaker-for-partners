@@ -1,5 +1,12 @@
-// Recommendation Helpers - Consolidated logic for colors and badges
-import { Badge } from '@/components/ui/badge';
+/**
+ * Recommendation Helpers
+ * 
+ * Consolidated logic for recommendation colors, badges, and pre-work lists.
+ * Provides visual styling and action items based on recommendation type.
+ * 
+ * @module utils/recommendationHelpers
+ */
+
 import { RECOMMENDATION_TYPES, RECOMMENDATION_COLORS } from '@/constants/partnerConstants';
 
 export function getRecommendationColor(recommendation: string): string {
