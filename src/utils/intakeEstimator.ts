@@ -1,5 +1,11 @@
-// Partner Intake Estimator
-// Calculate estimated Sprint candidates based on intake form data
+/**
+ * Partner Intake Estimator
+ * 
+ * Calculates estimated sprint candidates based on intake form data.
+ * Used to provide live feedback during the intake process.
+ * 
+ * @module utils/intakeEstimator
+ */
 
 export interface IntakeData {
   objectives: string[];
