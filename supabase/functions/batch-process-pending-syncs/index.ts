@@ -7,6 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Maximum number of logs to process in a single batch
+const MAX_BATCH_SIZE = 50;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -20,13 +23,13 @@ serve(async (req) => {
 
     console.log('Starting batch processing of pending sync logs');
 
-    // Get all pending sync logs
+    // Get all pending sync logs with limit to prevent abuse
     const { data: pendingLogs, error: fetchError } = await supabase
       .from('google_sheets_sync_log')
       .select('*')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
-      .limit(50);
+      .limit(MAX_BATCH_SIZE);
 
     if (fetchError) {
       throw new Error(`Failed to fetch pending logs: ${fetchError.message}`);
@@ -43,6 +46,10 @@ serve(async (req) => {
         processedCount++;
         
         try {
+          // Validate sync_type before processing
+          const validSyncTypes = ['booking', 'analytics', 'lead_scores'];
+          const syncType = validSyncTypes.includes(log.sync_type) ? log.sync_type : 'booking';
+
           // Call the main sync function for each log
           const syncResponse = await fetch(`${supabaseUrl}/functions/v1/sync-to-google-sheets`, {
             method: 'POST',
@@ -51,7 +58,7 @@ serve(async (req) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              type: log.sync_type || 'booking',
+              type: syncType,
               trigger_type: 'batch_processing',
               sync_log_id: log.id,
               data: log.sync_data
@@ -60,45 +67,40 @@ serve(async (req) => {
 
           if (syncResponse.ok) {
             successCount++;
-            console.log(`Successfully processed sync log ${log.id}`);
+            console.log(`Successfully processed sync log ${(log.id as string).substring(0, 8)}`);
           } else {
             errorCount++;
             const errorText = await syncResponse.text();
-            console.error(`Failed to process sync log ${log.id}: ${errorText}`);
+            console.error(`Failed to process sync log ${(log.id as string).substring(0, 8)}: HTTP ${syncResponse.status}`);
             
-            // Update the log with error status
+            // Update the log with error status (don't expose full error to log)
             await supabase
               .from('google_sheets_sync_log')
               .update({
                 status: 'batch_failed',
-                error_message: `HTTP ${syncResponse.status}: ${errorText}`,
+                error_message: `HTTP ${syncResponse.status}: Sync failed`,
                 last_updated_at: new Date().toISOString(),
                 sync_metadata: {
-                  ...log.sync_metadata,
-                  batch_error_at: new Date().toISOString(),
-                  batch_error_details: errorText
+                  ...(log.sync_metadata as Record<string, unknown> || {}),
+                  batch_error_at: new Date().toISOString()
                 }
               })
               .eq('id', log.id);
           }
         } catch (error: unknown) {
           errorCount++;
-          console.error(`Exception processing sync log ${log.id}:`, error);
+          console.error(`Exception processing sync log ${(log.id as string).substring(0, 8)}:`, error);
           
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-          const errorStack = error instanceof Error ? error.stack : undefined;
-          
-          // Update the log with error status
+          // Update the log with error status (sanitized message)
           await supabase
             .from('google_sheets_sync_log')
             .update({
               status: 'batch_failed',
-              error_message: errorMessage,
+              error_message: 'Batch processing failed',
               last_updated_at: new Date().toISOString(),
               sync_metadata: {
-                ...log.sync_metadata,
-                batch_error_at: new Date().toISOString(),
-                batch_error_details: errorStack
+                ...(log.sync_metadata as Record<string, unknown> || {}),
+                batch_error_at: new Date().toISOString()
               }
             })
             .eq('id', log.id);
@@ -120,10 +122,9 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     console.error('Error in batch processing:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    // Don't expose internal error details
     return new Response(JSON.stringify({
-      error: 'Batch processing failed',
-      details: errorMessage
+      error: 'Batch processing failed'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
