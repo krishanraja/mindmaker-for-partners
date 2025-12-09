@@ -13,10 +13,11 @@ import {
   ScoredPortfolioItem,
   PortfolioItem 
 } from '@/utils/partnerScoring';
-import { supabase } from '@/integrations/supabase/client';
+import { insertPortfolioItems } from '@/services/partnerService';
 import { useToast } from '@/hooks/use-toast';
 import { HeatmapVisualization } from './HeatmapVisualization';
 import { PortfolioScoringRow } from './PortfolioScoringRow';
+import { logger } from '@/lib/logger';
 
 interface PortfolioScoringTableProps {
   intakeData: PartnerIntakeData;
@@ -141,66 +142,54 @@ export const PortfolioScoringTable: React.FC<PortfolioScoringTableProps> = ({
 
     setIsSubmitting(true);
 
-    try {
-      // Calculate scores for all items
-      const fullyScored = portfolioItems.map(item => {
-        const portfolioItem: PortfolioItem = {
-          ...item,
-          stage: '' // Not used in new model
-        };
-        const cognitive_risk_score = calculateCognitiveRiskScore(portfolioItem);
-        const capital_at_risk = calculateCapitalAtRisk(portfolioItem);
-        const cognitive_readiness = calculateCognitiveReadiness(portfolioItem);
-        const recommendation = getRecommendation(portfolioItem, cognitive_risk_score, capital_at_risk);
-        const risk_flags = getRiskFlags(portfolioItem);
-        
-        return { 
-          ...portfolioItem, 
-          cognitive_risk_score,
-          capital_at_risk,
-          cognitive_readiness,
-          recommendation, 
-          risk_flags,
-          fit_score: 100 - cognitive_risk_score
-        };
+    // Calculate scores for all items
+    const fullyScored: ScoredPortfolioItem[] = portfolioItems.map(item => {
+      const portfolioItem: PortfolioItem = {
+        ...item,
+        stage: '' // Not used in new model
+      };
+      const cognitive_risk_score = calculateCognitiveRiskScore(portfolioItem);
+      const capital_at_risk = calculateCapitalAtRisk(portfolioItem);
+      const cognitive_readiness = calculateCognitiveReadiness(portfolioItem);
+      const recommendation = getRecommendation(portfolioItem, cognitive_risk_score, capital_at_risk);
+      const risk_flags = getRiskFlags(portfolioItem);
+      
+      return { 
+        ...portfolioItem, 
+        cognitive_risk_score,
+        capital_at_risk,
+        cognitive_readiness,
+        recommendation, 
+        risk_flags,
+        fit_score: 100 - cognitive_risk_score
+      };
+    });
+
+    // Save to database using service layer
+    const result = await insertPortfolioItems(intakeId, fullyScored);
+
+    if (!result.success) {
+      logger.logError('Failed to save portfolio items', result.error, {
+        intakeId,
+        itemCount: fullyScored.length
       });
-
-      // Save to database - using new field structure
-      const itemsToInsert = fullyScored.map(item => ({
-        intake_id: intakeId,
-        name: item.name,
-        sector: item.sector,
-        hype_vs_discipline: item.hype_vs_discipline,
-        mental_scaffolding: item.mental_scaffolding,
-        decision_quality: item.decision_quality,
-        vendor_resistance: item.vendor_resistance,
-        pressure_intensity: item.pressure_intensity,
-        sponsor_thinking: item.sponsor_thinking,
-        upgrade_willingness: item.upgrade_willingness,
-        cognitive_risk_score: item.cognitive_risk_score,
-        capital_at_risk: item.capital_at_risk,
-        cognitive_readiness: item.cognitive_readiness,
-        recommendation: item.recommendation,
-        risk_flags_json: item.risk_flags
-      }));
-
-      const { error } = await supabase
-        .from('partner_portfolio_items' as any)
-        .insert(itemsToInsert);
-
-      if (error) throw error;
-
-      onComplete(fullyScored);
-    } catch (error) {
-      console.error('Error saving portfolio items:', error);
+      
       toast({
         title: 'Error',
-        description: 'Failed to save portfolio data. Please try again.',
+        description: result.error?.message || 'Failed to save portfolio data. Please try again.',
         variant: 'destructive'
       });
-    } finally {
       setIsSubmitting(false);
+      return;
     }
+
+    logger.info('Portfolio items saved successfully', {
+      intakeId,
+      itemCount: fullyScored.length
+    });
+    
+    onComplete(fullyScored);
+    setIsSubmitting(false);
   };
 
   return (
