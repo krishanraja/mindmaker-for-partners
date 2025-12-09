@@ -10,6 +10,17 @@ const corsHeaders = {
 const GOOGLE_SHEETS_API_URL = 'https://sheets.googleapis.com/v4/spreadsheets';
 const SPREADSHEET_NAME = 'Fractional AI: Leader Leads';
 
+// Valid sync types
+const VALID_SYNC_TYPES = ['booking', 'analytics', 'lead_scores'] as const;
+type SyncType = typeof VALID_SYNC_TYPES[number];
+
+/**
+ * Validates sync type is one of the allowed values
+ */
+function isValidSyncType(value: unknown): value is SyncType {
+  return typeof value === 'string' && VALID_SYNC_TYPES.includes(value as SyncType);
+}
+
 // Encryption utilities
 async function encryptToken(token: string): Promise<string> {
   const encryptionKey = Deno.env.get('TOKEN_ENCRYPTION_KEY');
@@ -68,7 +79,7 @@ async function decryptToken(encryptedToken: string): Promise<string> {
 }
 
 // Get or refresh Google OAuth token with service account authentication
-async function getGoogleToken(supabase: any): Promise<string> {
+async function getGoogleToken(_supabase: any): Promise<string> {
   try {
     // For production Google Sheets integration, use service account approach
     // This is a simplified implementation for testing - requires proper service account setup
@@ -120,7 +131,7 @@ async function getOrCreateSpreadsheet(accessToken: string): Promise<string> {
     }
     
     const spreadsheetData = await getResponse.json();
-    const existingSheets = spreadsheetData.sheets.map((sheet: any) => sheet.properties.title);
+    const existingSheets = spreadsheetData.sheets.map((sheet: { properties: { title: string } }) => sheet.properties.title);
     
     // Required tabs for our data
     const requiredTabs = ['Bookings', 'Lead Scores', 'Analytics'];
@@ -170,7 +181,7 @@ async function getOrCreateSpreadsheet(accessToken: string): Promise<string> {
 }
 
 // Sync data to Google Sheets with proper headers and append functionality
-async function syncToGoogleSheets(spreadsheetId: string, accessToken: string, sheetName: string, data: any[]): Promise<void> {
+async function syncToGoogleSheets(spreadsheetId: string, accessToken: string, sheetName: string, data: Record<string, unknown>[]): Promise<void> {
   if (data.length === 0) return;
   
   // Define systematic column headers for lead tracking
@@ -278,9 +289,47 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { type = 'booking', data, trigger_type = 'manual' } = await req.json();
+    // Parse and validate request body
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      console.error('Invalid JSON in request body');
+      return new Response(
+        JSON.stringify({ error: 'Invalid request body' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
-    console.log('Background Google Sheets sync triggered', { type, trigger_type });
+    if (!body || typeof body !== 'object') {
+      return new Response(
+        JSON.stringify({ error: 'Request body must be an object' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { type = 'booking', data, trigger_type = 'manual' } = body as {
+      type?: unknown;
+      data?: unknown;
+      trigger_type?: unknown;
+    };
+
+    // Validate sync type
+    if (!isValidSyncType(type)) {
+      console.warn('Invalid sync type received:', type);
+      return new Response(
+        JSON.stringify({ error: `Invalid sync type. Must be one of: ${VALID_SYNC_TYPES.join(', ')}` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate trigger_type
+    const validTriggerTypes = ['manual', 'batch_processing', 'scheduled', 'webhook'];
+    const safeTriggerType = typeof trigger_type === 'string' && validTriggerTypes.includes(trigger_type) 
+      ? trigger_type 
+      : 'manual';
+
+    console.log('Background Google Sheets sync triggered', { type, trigger_type: safeTriggerType });
 
     // Log sync attempt
     const { data: syncLog, error: logError } = await supabase
@@ -289,7 +338,7 @@ serve(async (req) => {
         sync_type: type,
         status: 'pending',
         sync_metadata: {
-          trigger_type,
+          trigger_type: safeTriggerType,
           timestamp: new Date().toISOString(),
           environment: Deno.env.get('DENO_DEPLOYMENT_ID') ? 'production' : 'development'
         }
@@ -301,7 +350,7 @@ serve(async (req) => {
       console.error('Error creating sync log:', logError);
     }
 
-    let sheetData: any[] = [];
+    let sheetData: Record<string, unknown>[] = [];
     let sheetName = '';
 
     switch (type) {
@@ -318,6 +367,7 @@ serve(async (req) => {
         sheetName = 'Lead Scores';
         break;
       default:
+        // This should never happen due to validation above, but TypeScript needs it
         throw new Error(`Unknown sync type: ${type}`);
     }
 
@@ -342,7 +392,7 @@ serve(async (req) => {
                 data_count: sheetData.length,
                 synced_at: new Date().toISOString(),
                 sync_metadata: {
-                  ...syncLog.sync_metadata,
+                  ...(syncLog.sync_metadata as Record<string, unknown>),
                   spreadsheet_id: 'test_spreadsheet_id',
                   sheet_name: sheetName,
                   records_synced: sheetData.length,
@@ -368,7 +418,7 @@ serve(async (req) => {
                 data_count: sheetData.length,
                 synced_at: new Date().toISOString(),
                 sync_metadata: {
-                  ...syncLog.sync_metadata,
+                  ...(syncLog.sync_metadata as Record<string, unknown>),
                   spreadsheet_id: spreadsheetId,
                   sheet_name: sheetName,
                   records_synced: sheetData.length
@@ -385,15 +435,14 @@ serve(async (req) => {
         // Update sync log with error
         if (syncLog) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-          const errorStack = error instanceof Error ? error.stack : undefined;
           await supabase
             .from('google_sheets_sync_log')
             .update({
               status: 'failed',
               error_message: errorMessage,
               sync_metadata: {
-                ...syncLog.sync_metadata,
-                error_details: errorStack
+                ...(syncLog.sync_metadata as Record<string, unknown>),
+                error_details: 'Sync failed - see logs for details'
               }
             })
             .eq('id', syncLog.id);
@@ -413,7 +462,7 @@ serve(async (req) => {
           data_count: sheetData.length,
           sync_data: sheetData.slice(0, 10), // Store sample of data for debugging
           sync_metadata: {
-            ...syncLog.sync_metadata,
+            ...(syncLog.sync_metadata as Record<string, unknown>),
             total_records_prepared: sheetData.length,
             sample_record: sheetData[0] || null
           }
@@ -434,10 +483,9 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     console.error('Error in background Google Sheets sync:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    // Don't expose internal error details
     return new Response(JSON.stringify({ 
-      error: 'Background sync failed',
-      details: errorMessage 
+      error: 'Background sync failed'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -445,7 +493,36 @@ serve(async (req) => {
   }
 });
 
-async function formatBookingData(supabase: any, additionalData?: any) {
+interface BookingRecord {
+  id: string;
+  created_at: string;
+  session_id?: string;
+  contact_name: string;
+  contact_email: string;
+  company_name: string;
+  role?: string;
+  phone?: string;
+  service_type?: string;
+  lead_score?: number;
+  priority?: string;
+  status?: string;
+  specific_needs?: string;
+  conversation_sessions?: {
+    session_title?: string;
+    started_at?: string;
+    completed_at?: string;
+    status?: string;
+    business_context?: Record<string, unknown>;
+  };
+  lead_qualification_scores?: {
+    total_score?: number;
+    engagement_score?: number;
+    business_readiness_score?: number;
+    implementation_readiness?: number;
+  };
+}
+
+async function formatBookingData(supabase: any, _additionalData?: unknown): Promise<Record<string, unknown>[]> {
   // Get all booking requests with related data
   const { data: bookings, error } = await supabase
     .from('booking_requests')
@@ -473,9 +550,9 @@ async function formatBookingData(supabase: any, additionalData?: any) {
     return [];
   }
 
-  return bookings.map((booking: any) => {
+  return ((bookings || []) as any[]).map((booking: any) => {
     // Parse assessment data from specific_needs field
-    let assessmentData = {};
+    let assessmentData: Record<string, unknown> = {};
     try {
       if (booking.specific_needs && booking.specific_needs.includes('Assessment data:')) {
         const jsonMatch = booking.specific_needs.match(/Assessment data: ({.*})/);
@@ -488,8 +565,7 @@ async function formatBookingData(supabase: any, additionalData?: any) {
     }
 
     // Extract key metrics from assessment data
-    const qualificationData = (assessmentData as any).qualificationData || {};
-    const phaseResponses = (assessmentData as any).phaseResponses || {};
+    const qualificationData = (assessmentData.qualificationData || {}) as Record<string, unknown>;
     
     return {
       'Lead ID': booking.id.substring(0, 8),
@@ -498,102 +574,59 @@ async function formatBookingData(supabase: any, additionalData?: any) {
       'Full Name': booking.contact_name,
       'Email': booking.contact_email,
       'Company': booking.company_name,
-      'Role/Title': booking.role,
+      'Role/Title': booking.role || '',
       'Phone': booking.phone || '',
-      'LinkedIn': '', // Could be extracted from contact info if available
-      'AI Readiness Score': booking.lead_score || (assessmentData as any).totalScore || 0,
-      'Current AI Usage Level': phaseResponses.aiUseCases ? `${phaseResponses.aiUseCases.length} use cases identified` : 'Not assessed',
-      'Decision Authority': booking.role && (booking.role.toLowerCase().includes('ceo') || booking.role.toLowerCase().includes('cto') || booking.role.toLowerCase().includes('founder')) ? 'High' : 'Medium',
-      'Budget Range': 'Not specified', // Could be derived from company size and role
-      'Implementation Timeline': booking.preferred_time || 'Not specified',
-      'Team Readiness': phaseResponses.upskillPercentage ? `${phaseResponses.upskillPercentage}% ready for upskilling` : 'Not assessed',
-      'Top 3 Productivity Bottlenecks': phaseResponses.dailyFrictions ? phaseResponses.dailyFrictions.join(', ').substring(0, 100) : booking.specific_needs?.substring(0, 100) || '',
-      'Pain Point Severity': booking.priority || 'medium',
-      'Time Spent (minutes)': qualificationData.meetingHours ? qualificationData.meetingHours * 60 : 0,
-      'Questions Answered': Object.keys(phaseResponses).length || 0,
-      'Messages Exchanged': booking.conversation_sessions?.[0]?.business_context?.message_count || 0,
-      'Insight Categories Generated': phaseResponses.stakeholderAudiences ? phaseResponses.stakeholderAudiences.join(', ') : '',
-      'Booking Request Status': booking.status,
-      'Business Readiness Score': booking.lead_qualification_scores?.[0]?.business_readiness_score || 0,
-      'Implementation Readiness': booking.lead_qualification_scores?.[0]?.implementation_readiness || 0,
-      'Lead Quality Score': booking.lead_score >= 70 ? 'High' : booking.lead_score >= 50 ? 'Medium' : 'Low',
-      'Recommended Service Type': booking.service_type,
-      'Follow-up Priority': booking.priority || 'medium',
-      'Scheduled Date': booking.scheduled_date ? new Date(booking.scheduled_date).toLocaleDateString() : '',
-      'Notes': `Service: ${booking.service_title}. Skills gaps: ${phaseResponses.skillGaps ? phaseResponses.skillGaps.join(', ') : 'Not specified'}`
+      'AI Readiness Score': qualificationData.aiReadiness || '',
+      'Decision Authority': qualificationData.authority || '',
+      'Budget Range': qualificationData.budget || '',
+      'Implementation Timeline': qualificationData.timeline || '',
+      'Lead Quality Score': booking.lead_score || '',
+      'Recommended Service Type': booking.service_type || '',
+      'Follow-up Priority': booking.priority || '',
+      'Booking Request Status': booking.status || 'pending'
     };
   });
 }
 
-async function formatAnalyticsData(supabase: any) {
-  // Get conversion analytics data
-  const { data: analytics, error } = await supabase
-    .from('conversion_analytics')
+async function formatAnalyticsData(supabase: any): Promise<Record<string, unknown>[]> {
+  const { data: sessions, error } = await supabase
+    .from('conversation_sessions')
     .select('*')
-    .order('created_at', { ascending: false })
-    .limit(500);
+    .order('started_at', { ascending: false })
+    .limit(100);
 
   if (error) {
     console.error('Error fetching analytics data:', error);
     return [];
   }
 
-  return analytics.map((record: any) => ({
-    'Date': record.created_at,
-    'Conversion Type': record.conversion_type,
-    'Service Type': record.service_type || '',
-    'Lead Score': record.lead_score || 0,
-    'Session Duration (min)': Math.round((record.session_duration || 0) / 60),
-    'Messages Exchanged': record.messages_exchanged || 0,
-    'Topics Explored': record.topics_explored || 0,
-    'Insights Generated': record.insights_generated || 0,
-    'Conversion Value': record.conversion_value || 0,
-    'Source Channel': record.source_channel || 'ai_chat'
+  return (sessions || []).map((session: Record<string, unknown>) => ({
+    'Session ID': (session.id as string).substring(0, 8),
+    'Started At': session.started_at ? new Date(session.started_at as string).toLocaleString() : '',
+    'Completed At': session.completed_at ? new Date(session.completed_at as string).toLocaleString() : '',
+    'Status': session.status || 'unknown',
+    'Session Title': session.session_title || ''
   }));
 }
 
-async function formatLeadScoreData(supabase: any) {
-  // Get lead qualification scores with session data and business context
+async function formatLeadScoreData(supabase: any): Promise<Record<string, unknown>[]> {
   const { data: scores, error } = await supabase
     .from('lead_qualification_scores')
-    .select(`
-      *,
-      conversation_sessions (
-        session_title,
-        started_at,
-        business_context
-      ),
-      user_business_context!inner (
-        context_data,
-        business_name,
-        industry,
-        company_size
-      )
-    `)
+    .select('*')
     .order('created_at', { ascending: false })
-    .limit(300);
+    .limit(100);
 
   if (error) {
     console.error('Error fetching lead score data:', error);
     return [];
   }
 
-  return scores.map((score: any) => ({
-    'Date': new Date(score.created_at).toLocaleDateString(),
-    'Session ID': score.session_id?.substring(0, 8) || 'N/A',
-    'Source': score.session_id ? 'AI Chat Assessment' : 'Quick Form Assessment',
-    'Total AI Readiness Score': score.total_score || 0,
+  return (scores || []).map((score: Record<string, unknown>) => ({
+    'Score ID': (score.id as string).substring(0, 8),
+    'Total Score': score.total_score || 0,
     'Engagement Score': score.engagement_score || 0,
-    'Business Readiness Score': score.business_readiness_score || 0,
-    'Pain Point Severity': score.pain_point_severity || 0,
+    'Business Readiness': score.business_readiness_score || 0,
     'Implementation Readiness': score.implementation_readiness || 0,
-    'Company': score.user_business_context?.business_name || '',
-    'Industry': score.user_business_context?.industry || '',
-    'Company Size': score.user_business_context?.company_size || '',
-    'Lead Quality': score.total_score >= 70 ? 'High Priority' : score.total_score >= 50 ? 'Medium Priority' : 'Low Priority',
-    'Session Duration (min)': Math.round((score.conversation_sessions?.[0]?.business_context?.session_duration || 0) / 60),
-    'Qualification Notes': score.qualification_notes || '',
-    'Business Context Summary': score.user_business_context?.context_data ? 
-      JSON.stringify(score.user_business_context.context_data).substring(0, 200) + '...' : ''
+    'Created At': score.created_at ? new Date(score.created_at as string).toLocaleString() : ''
   }));
 }

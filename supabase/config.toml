@@ -1,5 +1,10 @@
 project_id = "bkyuxvschuwngtcdhsyg"
 
+# SECURITY NOTE: These functions have verify_jwt = false because they are called
+# from the frontend without authentication. Input validation is implemented in
+# each function to prevent abuse. Consider enabling JWT verification for
+# sensitive operations in production.
+
 [functions.create-partner-share-link]
 verify_jwt = false
 
@@ -7,4 +12,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-partner-insights]
+verify_jwt = false
+
+[functions.sync-to-google-sheets]
+verify_jwt = false
+
+[functions.send-booking-notification]
+verify_jwt = false
+
+[functions.batch-process-pending-syncs]
 verify_jwt = false
